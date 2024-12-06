@@ -7,3 +7,4 @@ libs = ["lib"]
 
 [rpc_endpoints]
 anvil = "http://127.0.0.1:8545"
+alfajores = "https://alfajores-forno.celo-testnet.org"

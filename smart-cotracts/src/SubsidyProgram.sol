@@ -35,7 +35,7 @@ contract SubsidyProgram is Ownable {
     }
 
     function addFunds(uint256 _amount) public {
-        emit FundsAdded(_amount, token.balanceOf(address(this)));
+        emit FundsAdded(_amount, token.balanceOf(address(this)) + _amount);
         require(token.transferFrom(msg.sender, address(this), _amount), "Transfer failed.");
     }
 
