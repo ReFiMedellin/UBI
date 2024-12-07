@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-tabs": "^1.1.1",
     "@react-router/dev": "^7.0.2",
     "@reown/appkit": "^1.5.2",
     "@reown/appkit-adapter-wagmi": "^1.5.2",

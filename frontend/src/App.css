@@ -40,3 +40,21 @@
 .read-the-docs {
   color: #888;
 }
+
+.tabline {
+  border-radius: 10px;
+  padding: 0.3em;
+  background-color: #71717a;
+}
+
+.tab-button {
+  font-size: 0.875em;
+  color: #fafafa;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.tab-button[data-state="inactive"] {
+  background-color: #71717a;
+  color: #d4d4d8;
+}
