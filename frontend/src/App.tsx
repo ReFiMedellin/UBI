@@ -9,10 +9,36 @@ import Info from './components/pages/main/Info';
 import { useWriteContract } from 'wagmi';
 import { UBI_CONTRACT_ADDRESS, UBI_CONTRACT_ABI } from './constants';
 import useUBIContract from './hooks/useUBIContract';
+import { useToast } from './hooks/use-toast';
+import { ToastAction } from '@radix-ui/react-toast';
 
 function App() {
+  const { toast } = useToast();
   const { address } = useAppKitAccount();
-  const { writeContract } = useWriteContract();
+  const { writeContract, isPending } = useWriteContract({
+    mutation: {
+      onError: (error) => {
+        console.error(error);
+        toast({
+          title: 'Error al reclamar el subsidio',
+          description: error.message,
+          variant: 'destructive',
+          action: (
+            <ToastAction onClick={handleClaim} altText='Try again'>
+              Try again
+            </ToastAction>
+          ),
+        });
+      },
+    },
+  });
+  const handleClaim = () => {
+    writeContract({
+      abi: UBI_CONTRACT_ABI,
+      address: UBI_CONTRACT_ADDRESS,
+      functionName: 'claimSubsidy',
+    });
+  };
   const {
     isAbleToClaim,
     claimInterval,
@@ -50,13 +76,8 @@ function App() {
             <Button
               disabled={!isWhiteListed || !isAbleToClaim}
               className='w-full'
-              onClick={() => {
-                writeContract({
-                  abi: UBI_CONTRACT_ABI,
-                  address: UBI_CONTRACT_ADDRESS,
-                  functionName: 'claimSubsidy',
-                });
-              }}
+              onClick={handleClaim}
+              loading={isPending}
             >
               Reclamar
             </Button>

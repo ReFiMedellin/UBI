@@ -13,7 +13,7 @@ function Header({ isWhiteListed, isAbleToClaim, lastClaimed, claimInterval, valu
     if (!isWhiteListed) {
       return "Lo sentimos, aún no eres beneficiario"
     } else if (isAbleToClaim) {
-      return `Monto disponible: $${valueToClaim} cCop`
+      return `Monto disponible para reclamar: $${valueToClaim} cCop`
     } else {
       const secondsSinceLastClaimed = (Date.now() / 1000) - Number(lastClaimed)
       const daysLeft = secondsToDays(Number(claimInterval) - secondsSinceLastClaimed)
