@@ -20,55 +20,91 @@ contract SubsidyProgram is Ownable {
     event FundsWithdrawed(uint256 amountWithdrawed);
     event BeneficiaryAdded(address indexed beneficiaryAddress);
     event BeneficiaryRemoved(address indexed beneficiaryAddress);
-    event SubsidyClaimed(address indexed beneficiaryAddress, uint256 amount, uint256 contractBalance);
+    event SubsidyClaimed(
+        address indexed beneficiaryAddress,
+        uint256 amount,
+        uint256 contractBalance
+    );
+    event ClaimIntervalSet(uint256 interval);
+    event ClaimableAmountSet(uint256 amount);
+    event TokenAddressSet(address tokenAddress);
 
     constructor(address _tokenAddress) Ownable(msg.sender) {
         token = IERC20(_tokenAddress);
     }
 
-    function setClaimInterval(uint256 _interval) public onlyOwner {
+    function setClaimInterval(uint256 _interval) external onlyOwner {
         subsidyClaimInterval = _interval;
+        emit ClaimIntervalSet(interval);
     }
 
-    function setClaimableAmount(uint256 _amount) public onlyOwner {
+    function setClaimableAmount(uint256 _amount) external onlyOwner {
         subsidyClaimableAmount = _amount;
+        emit ClaimableAmountSet(_amount);
     }
 
-    function addFunds(uint256 _amount) public {
+    function setTokenAddress(address _tokenAddress) external onlyOwner {
+        token = IERC20(_tokenAddress);
+        emit TokenAddressSet(_tokenAddress);
+    }
+
+    function addFunds(uint256 _amount) external {
+        require(
+            token.transferFrom(msg.sender, address(this), _amount),
+            "Transfer failed."
+        );
         emit FundsAdded(_amount, token.balanceOf(address(this)) + _amount);
-        require(token.transferFrom(msg.sender, address(this), _amount), "Transfer failed.");
     }
 
-    function withdrawFunds() public onlyOwner {
+    function withdrawFunds() external onlyOwner {
         uint256 contractBalance = token.balanceOf(address(this));
+        require(
+            token.transfer(msg.sender, contractBalance),
+            "Transfer failed."
+        );
         emit FundsWithdrawed(contractBalance);
-        require(token.transfer(msg.sender, contractBalance), "Transfer failed.");
     }
 
-    function addBeneficiary(address _userAddress) public onlyOwner {
+    function addBeneficiary(address _userAddress) external onlyOwner {
         require(!isBeneficiary(_userAddress), "Already a beneficiary.");
         require(_userAddress != address(0), "Invalid address");
+        addressToUser[_userAddress] = User({
+            lastClaimed: block.timestamp - subsidyClaimInterval,
+            totalClaimed: 0
+        });
         emit BeneficiaryAdded(_userAddress);
-        addressToUser[_userAddress] = User({lastClaimed: block.timestamp - subsidyClaimInterval, totalClaimed: 0});
     }
 
-    function removeBeneficiary(address _userAddress) public onlyOwner {
+    function removeBeneficiary(address _userAddress) external onlyOwner {
         require(isBeneficiary(_userAddress), "Address is not a beneficiary.");
-        emit BeneficiaryRemoved(_userAddress);
         addressToUser[_userAddress] = User(0, 0);
+        emit BeneficiaryRemoved(_userAddress);
     }
 
     function claimSubsidy() public {
         require(isBeneficiary(msg.sender), "Address is not a beneficiary.");
-        require(block.timestamp - addressToUser[msg.sender].lastClaimed >= subsidyClaimInterval, "Cannot claim yet.");
+        require(
+            block.timestamp - addressToUser[msg.sender].lastClaimed >=
+                subsidyClaimInterval,
+            "Cannot claim yet."
+        );
 
         addressToUser[msg.sender].lastClaimed = block.timestamp;
         addressToUser[msg.sender].totalClaimed += subsidyClaimableAmount;
-        emit SubsidyClaimed(msg.sender, subsidyClaimableAmount, token.balanceOf(address(this)));
-        require(token.transfer(msg.sender, subsidyClaimableAmount), "Not enough funds.");
+        require(
+            token.transfer(msg.sender, subsidyClaimableAmount),
+            "Not enough funds."
+        );
+        emit SubsidyClaimed(
+            msg.sender,
+            subsidyClaimableAmount,
+            token.balanceOf(address(this))
+        );
     }
 
-    function isBeneficiary(address _beneficiaryAddress) public view returns (bool) {
+    function isBeneficiary(
+        address _beneficiaryAddress
+    ) public view returns (bool) {
         return addressToUser[_beneficiaryAddress].lastClaimed != 0;
     }
 }
