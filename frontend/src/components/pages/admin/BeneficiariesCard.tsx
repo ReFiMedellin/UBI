@@ -2,13 +2,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { subsidyProgramAbi } from "@/generated"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 import { isAddress } from "viem"
 import { useWriteContract } from "wagmi"
+import { UBI_CONTRACT_ABI, UBI_CONTRACT_ADDRESS } from "@/constants"
 
 function BeneficiariesCard() {
-  const contractAddress = "0x1A6FBc7b51E55C6D4F15c8D5CE7e97daEA699ecf"
   const { writeContract } = useWriteContract()
 
   const handleAddSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
@@ -21,8 +20,8 @@ function BeneficiariesCard() {
       return
 
     writeContract({
-      abi: subsidyProgramAbi,
-      address: contractAddress,
+      abi: UBI_CONTRACT_ABI,
+      address: UBI_CONTRACT_ADDRESS,
       functionName: "addBeneficiary",
       args: [address],
     })
@@ -38,8 +37,8 @@ function BeneficiariesCard() {
       return
 
     writeContract({
-      abi: subsidyProgramAbi,
-      address: contractAddress,
+      abi: UBI_CONTRACT_ABI,
+      address: UBI_CONTRACT_ADDRESS,
       functionName: "removeBeneficiary",
       args: [address],
     })

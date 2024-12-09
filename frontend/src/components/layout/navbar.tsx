@@ -1,9 +1,9 @@
 import { createAppKit, useAppKitAccount } from '@reown/appkit/react'
 import { projectId, metadata, networks, wagmiAdapter } from '@/config'
 import { useReadContract } from 'wagmi'
-import { subsidyProgramAbi } from '@/generated'
 import { Button } from '../ui/button'
 import { Link, useLocation } from 'react-router'
+import { UBI_CONTRACT_ADDRESS, UBI_CONTRACT_ABI } from '@/constants'
 
 const generalConfig = {
   projectId,
@@ -22,12 +22,11 @@ createAppKit({
 })
 
 export function NavBar() {
-  const contractAddress = "0x1A6FBc7b51E55C6D4F15c8D5CE7e97daEA699ecf"
 
   const { isConnected, address } = useAppKitAccount()
   const { data } = useReadContract({
-    address: contractAddress,
-    abi: subsidyProgramAbi,
+    address: UBI_CONTRACT_ADDRESS,
+    abi: UBI_CONTRACT_ABI,
     functionName: "owner",
   })
 

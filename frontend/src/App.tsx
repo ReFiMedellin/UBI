@@ -6,39 +6,35 @@ import Header from '@/components/pages/main/Header'
 import { Button } from '@/components/ui/button'
 import Description from './components/pages/main/Description'
 import Info from './components/pages/main/Info'
-
-import { subsidyProgramAbi } from './generated'
-
 import { useReadContracts, useWriteContract } from 'wagmi'
+import { UBI_CONTRACT_ADDRESS, UBI_CONTRACT_ABI } from './constants'
 
 function App() {
   const { address, isConnected } = useAppKitAccount()
-  // Seguramente sea mejor ponerlo en un .env
-  const contractAddress = "0x1A6FBc7b51E55C6D4F15c8D5CE7e97daEA699ecf"
   const { writeContract } = useWriteContract()
 
   const { data }  = useReadContracts({
     contracts: [
       {
-        address: contractAddress,
-        abi: subsidyProgramAbi,
+        address: UBI_CONTRACT_ADDRESS,
+        abi: UBI_CONTRACT_ABI,
         functionName: "isBeneficiary",
         args: [address as `0x${string}`],
       },
       {
-        address: contractAddress,
-        abi: subsidyProgramAbi,
+        address: UBI_CONTRACT_ADDRESS,
+        abi: UBI_CONTRACT_ABI,
         functionName: "addressToUser",
         args: [address as `0x${string}`],
       },
       {
-        address: contractAddress,
-        abi: subsidyProgramAbi,
+        address: UBI_CONTRACT_ADDRESS,
+        abi: UBI_CONTRACT_ABI,
         functionName: "subsidyClaimInterval",
       },
       {
-        address: contractAddress,
-        abi: subsidyProgramAbi,
+        address: UBI_CONTRACT_ADDRESS,
+        abi: UBI_CONTRACT_ABI,
         functionName: "subsidyClaimableAmount",
       },
     ],
@@ -71,8 +67,8 @@ function App() {
             className='w-full'
             onClick={() => {
                 writeContract({
-                  abi: subsidyProgramAbi,
-                  address: contractAddress,
+                  abi: UBI_CONTRACT_ABI,
+                  address: UBI_CONTRACT_ADDRESS,
                   functionName: "claimSubsidy",
                 })
               }
