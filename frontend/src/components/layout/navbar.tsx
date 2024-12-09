@@ -15,8 +15,6 @@ createAppKit({
   adapters: [wagmiAdapter],
   features: {
     analytics: true,
-    email: true,
-    socials: ["google", "x", "github"],
   },
   ...generalConfig,
 })
