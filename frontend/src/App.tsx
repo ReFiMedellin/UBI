@@ -11,7 +11,7 @@ import { UBI_CONTRACT_ADDRESS, UBI_CONTRACT_ABI } from './constants';
 import useUBIContract from './hooks/useUBIContract';
 
 function App() {
-  const { address, isConnected } = useAppKitAccount();
+  const { address } = useAppKitAccount();
   const { writeContract } = useWriteContract();
   const {
     isAbleToClaim,
@@ -21,10 +21,6 @@ function App() {
     totalClaimed,
     valueToClaim,
   } = useUBIContract(address);
-
-  if (!isConnected || !address) {
-    return <h1 className='p-12'>Por favor, conecte su wallet</h1>;
-  }
 
   return (
     <div className='flex flex-col items-center justify-center h-[75vh] overflow-hidden'>

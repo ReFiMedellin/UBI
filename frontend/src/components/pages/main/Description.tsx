@@ -12,7 +12,7 @@ type DescriptionProps = {
 function Description({ isWhiteListed, isAbleToClaim, claimInterval, valueToClaim }: DescriptionProps) {
   const getClaimMessage = () => {
     if (!isWhiteListed)
-      return "Regístrate en [LINK]"
+      return <a href="#" target="_blank">Registrate aquí</a>
     else if (isAbleToClaim)
       return `Puedes reclamar tu subsidio cada ${claimIntervalInDays} días.`
     else

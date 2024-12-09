@@ -45,7 +45,7 @@ function BeneficiariesCard() {
   }
   
   return (
-    <Tabs defaultValue="add" className="w-[350px]">
+    <Tabs defaultValue="add" className="w-[350px] h-full flex-1">
       <TabsList className="grid w-full grid-cols-2 p-2 gap-x-1 tabline">
         <TabsTrigger value="add" className="tab-button">Añadir</TabsTrigger>
         <TabsTrigger value="delete" className="tab-button">Eliminar</TabsTrigger>

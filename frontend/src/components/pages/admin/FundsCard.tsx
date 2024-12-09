@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
 function FundsCard() {
   return (
-    <Tabs defaultValue="add" className="w-[350px]">
+    <Tabs defaultValue="add" className="w-[350px] h-full flex-1">
       <TabsList className="grid w-full grid-cols-2 p-2 gap-x-1 tabline">
         <TabsTrigger value="add" className="tab-button">Fondear</TabsTrigger>
         <TabsTrigger value="delete" className="tab-button">Retirar</TabsTrigger>
@@ -30,10 +30,7 @@ function FundsCard() {
           <CardHeader>
             <CardTitle>Retirar fondos</CardTitle>
           </CardHeader>
-          <CardContent className="text-left">
-            <Label>Cantidad</Label>
-            <Input disabled={ true } placeholder="Se retiran todos los fondos"/>
-          </CardContent>
+         
           <CardFooter>
             <Button className="w-full">Retirar</Button>
           </CardFooter>

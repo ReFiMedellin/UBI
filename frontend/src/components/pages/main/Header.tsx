@@ -22,7 +22,7 @@ function Header({ isWhiteListed, isAbleToClaim, lastClaimed, claimInterval, valu
   }
 
   return (
-    <h2 className="font-[600] text-[1.2rem]">{ getHeaderMessage() }</h2>
+    <h2 className="text-xl font-semibold">{ getHeaderMessage() }</h2>
   )
 }
 
