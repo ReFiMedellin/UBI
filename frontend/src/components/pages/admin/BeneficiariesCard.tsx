@@ -55,8 +55,13 @@ function BeneficiariesCard() {
     const formData = new FormData(evt.currentTarget)
     const address = formData.get("address")?.toString().trim() ?? ""
 
-    if (!isAddress(address))
+    if (!isAddress(address)) {
+      toast({
+        title: "¡Address inválida!",
+        variant: "destructive",
+      })
       return
+    }
 
     writeContract({
       abi: UBI_CONTRACT_ABI,
