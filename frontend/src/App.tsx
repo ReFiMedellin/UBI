@@ -6,16 +6,17 @@ import Header from '@/components/pages/main/Header';
 import { Button } from '@/components/ui/button';
 import Description from './components/pages/main/Description';
 import Info from './components/pages/main/Info';
-import { useWriteContract } from 'wagmi';
+import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { UBI_CONTRACT_ADDRESS, UBI_CONTRACT_ABI } from './constants';
 import useUBIContract from './hooks/useUBIContract';
 import { useToast } from './hooks/use-toast';
 import { ToastAction } from '@radix-ui/react-toast';
+import { useEffect } from 'react';
 
 function App() {
   const { toast } = useToast();
   const { address } = useAppKitAccount();
-  const { writeContract, isPending } = useWriteContract({
+  const { data: hash, writeContract, isPending } = useWriteContract({
     mutation: {
       onError: (error) => {
         console.error(error);
@@ -32,6 +33,7 @@ function App() {
       },
     },
   });
+
   const handleClaim = () => {
     writeContract({
       abi: UBI_CONTRACT_ABI,
@@ -39,6 +41,7 @@ function App() {
       functionName: 'claimSubsidy',
     });
   };
+
   const {
     isAbleToClaim,
     claimInterval,
@@ -47,6 +50,17 @@ function App() {
     totalClaimed,
     valueToClaim,
   } = useUBIContract(address);
+
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash })
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast({
+        title: "Transacción exitosa.",
+        description: "El subsidio fue reclamado correctamente.",
+      })
+    }
+  }, [isConfirmed])
 
   return (
     <div className='flex flex-col items-center justify-center h-[75vh] overflow-hidden'>
@@ -77,7 +91,7 @@ function App() {
               disabled={!isWhiteListed || !isAbleToClaim}
               className='w-full'
               onClick={handleClaim}
-              loading={isPending}
+              loading={isPending || isConfirming}
             >
               Reclamar
             </Button>

@@ -4,11 +4,28 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 import { isAddress } from "viem"
-import { useWriteContract } from "wagmi"
+import { useWaitForTransactionReceipt, useWriteContract } from "wagmi"
 import { UBI_CONTRACT_ABI, UBI_CONTRACT_ADDRESS } from "@/constants"
+import { useToast } from "@/hooks/use-toast"
+import { useEffect } from "react"
 
 function BeneficiariesCard() {
-  const { writeContract } = useWriteContract()
+  const { toast } = useToast()
+
+  const { writeContract, isPending, data: hash } = useWriteContract({
+    mutation: {
+      onError: (error) => {
+        console.error(error);
+        toast({
+          title: 'Error en la transacción',
+          description: error.message,
+          variant: 'destructive',
+        });
+      },
+    },
+  })
+
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash })
 
   const handleAddSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault()
@@ -16,8 +33,13 @@ function BeneficiariesCard() {
     const formData = new FormData(evt.currentTarget)
     const address = formData.get("address")?.toString().trim() ?? ""
 
-    if (!isAddress(address))
+    if (!isAddress(address)) {
+      toast({
+        title: "¡Address inválida!",
+        variant: "destructive",
+      })
       return
+    }
 
     writeContract({
       abi: UBI_CONTRACT_ABI,
@@ -43,6 +65,13 @@ function BeneficiariesCard() {
       args: [address],
     })
   }
+
+  useEffect(() => {
+    if (isSuccess)
+      toast({
+        title: "¡Transacción exitosa!",
+      })
+  }, [isSuccess])
   
   return (
     <Tabs defaultValue="add" className="w-[350px] h-full flex-1">
@@ -61,7 +90,7 @@ function BeneficiariesCard() {
             <Input name="address" id="addressAdd" placeholder="0x123..."/>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full">Añadir</Button>
+            <Button type="submit" className="w-full" loading={isPending || isLoading}>Añadir</Button>
           </CardFooter>
         </form>
         </Card>
@@ -77,7 +106,7 @@ function BeneficiariesCard() {
             <Input name="address" id="addressDelete" placeholder="0x123..."/>
           </CardContent>
           <CardFooter>
-            <Button className="w-full">Eliminar</Button>
+            <Button type="submit" loading={isPending || isLoading} className="w-full">Eliminar</Button>
           </CardFooter>
         </form>
         </Card>
