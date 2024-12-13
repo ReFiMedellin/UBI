@@ -17,11 +17,15 @@ createRoot(document.getElementById('root')!).render(
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <NavBar />
-          <Routes>
-            <Route index element={<App />} />
-            <Route path='/admin' element={<AdminPanel />} />
-          </Routes>
+          <main className='w-full min-h-screen flex flex-col'>
+            <NavBar />
+            <div className='flex-1 flex items-center justify-center'>
+              <Routes>
+                <Route index element={<App />} />
+                <Route path='/admin' element={<AdminPanel />} />
+              </Routes>
+            </div>
+          </main>
         </BrowserRouter>
         <Toaster />
       </QueryClientProvider>

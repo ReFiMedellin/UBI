@@ -63,9 +63,9 @@ function App() {
   }, [isConfirmed])
 
   return (
-    <div className='flex flex-col items-center justify-center h-[75vh] overflow-hidden'>
+    <div className='flex flex-col items-center justify-center h-full max-w-[90vw] overflow-hidden'>
       <div>
-        <div className='m-4 w-[350px]'>
+        <div className='m-4 lg:w-[350px]'>
           <Header
             isWhiteListed={isWhiteListed}
             isAbleToClaim={isAbleToClaim}
@@ -74,7 +74,7 @@ function App() {
             valueToClaim={valueToClaim}
           />
         </div>
-        <Card className='w-[350px] m-auto'>
+        <Card className='lg:w-[350px] m-auto'>
           <Description
             isWhiteListed={isWhiteListed}
             isAbleToClaim={isAbleToClaim}
