@@ -35,7 +35,7 @@ contract SubsidyProgram is Ownable {
 
     function setClaimInterval(uint256 _interval) external onlyOwner {
         subsidyClaimInterval = _interval;
-        emit ClaimIntervalSet(interval);
+        emit ClaimIntervalSet(_interval);
     }
 
     function setClaimableAmount(uint256 _amount) external onlyOwner {
@@ -53,7 +53,7 @@ contract SubsidyProgram is Ownable {
             token.transferFrom(msg.sender, address(this), _amount),
             "Transfer failed."
         );
-        emit FundsAdded(_amount, token.balanceOf(address(this)) + _amount);
+        emit FundsAdded(_amount, token.balanceOf(address(this)));
     }
 
     function withdrawFunds() external onlyOwner {
