@@ -27,8 +27,7 @@ export function NavBar() {
     functionName: 'owner',
   });
 
-  // const isAdmin = isConnected && data && address && data === address
-  const isAdmin = true;
+  const isAdmin = isConnected && data && address && data === address
 
   const location = useLocation();
 
