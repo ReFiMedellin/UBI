@@ -1,4 +1,5 @@
 import { CardContent } from "@/components/ui/card"
+import { formatUnits } from "viem";
 
 type InfoProps = {
   isWhiteListed: boolean;
@@ -11,7 +12,10 @@ function Info({ isWhiteListed, lastClaimed, totalClaimed}: InfoProps) {
   return (
     <CardContent>
       <p>Última reclamación: { isWhiteListed ? lastClaimedDate.toLocaleDateString("es-CO") : "N/A"}</p>
-      <p>Total reclamado: ${ isWhiteListed ? Number(totalClaimed) : 0 } cCop</p>
+      <p>Total reclamado: { isWhiteListed ?  new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+      }).format(Number(formatUnits(totalClaimed, 18))) : "$ 0" } cCop</p>
     </CardContent>
   )
 }
