@@ -1,23 +1,8 @@
-import { createAppKit, useAppKitAccount } from '@reown/appkit/react';
-import { projectId, metadata, networks, wagmiAdapter } from '@/config';
+import { useAppKitAccount } from '@reown/appkit/react';
 import { useReadContract } from 'wagmi';
 import { Button } from '../ui/button';
 import { Link, useLocation } from 'react-router';
 import { UBI_CONTRACT_ADDRESS, UBI_CONTRACT_ABI } from '@/constants';
-
-const generalConfig = {
-  projectId,
-  metadata,
-  networks,
-};
-
-createAppKit({
-  adapters: [wagmiAdapter],
-  features: {
-    analytics: true,
-  },
-  ...generalConfig,
-});
 
 export function NavBar() {
   const { isConnected, address } = useAppKitAccount();
@@ -27,7 +12,7 @@ export function NavBar() {
     functionName: 'owner',
   });
 
-  const isAdmin = isConnected && data && address && data === address
+  const isAdmin = isConnected && data && address && data === address;
 
   const location = useLocation();
 

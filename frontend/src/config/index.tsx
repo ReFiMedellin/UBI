@@ -1,4 +1,3 @@
-import { cookieStorage, createStorage } from 'wagmi'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { celo  } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
@@ -19,12 +18,8 @@ export const metadata = {
 export const networks = [celo] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const wagmiAdapter = new WagmiAdapter({
-  storage: createStorage({
-    storage: cookieStorage,
-  }),
   projectId,
   networks,
-  ssr: true,
 })
 
 export const config = wagmiAdapter.wagmiConfig
