@@ -1,6 +1,6 @@
 import { cookieStorage, createStorage } from 'wagmi'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { celo, celoAlfajores } from '@reown/appkit/networks'
+import { celo  } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
 export const projectId = import.meta.env.VITE_PROJECT_ID
@@ -10,13 +10,13 @@ if (!projectId) {
 }
 
 export const metadata = {
-  name: 'AppKit Example',
-  description: 'AppKit Example',
-  url: 'https://reown.com', // origin must match your domain & subdomain
+  name: 'ReFi Medellin UBI',
+  description: 'ReFi Medellin UBI module',
+  url: 'https://ubi.refimedellin.org',
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
-export const networks = [celo, celoAlfajores] as [AppKitNetwork, ...AppKitNetwork[]]
+export const networks = [celo] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({

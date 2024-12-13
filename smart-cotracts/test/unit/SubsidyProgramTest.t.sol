@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import {DeploySubsidyProgram} from "../../script/DeploySubsidyProgram.s.sol";
+import {DeploySubsidyProgramTestnet} from "../../script/DeploySubsidyProgram.s.sol";
 import {SubsidyProgram} from "../../src/SubsidyProgram.sol";
 import {Test, console} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -17,7 +17,7 @@ contract SubsidyProgramTest is Test {
     address constant USER = address(1);
 
     function setUp() external {
-        DeploySubsidyProgram deployer = new DeploySubsidyProgram();
+        DeploySubsidyProgramTestnet deployer = new DeploySubsidyProgramTestnet();
         (SubsidyProgram subsidyProgram_, address tokenAddress) = deployer.run();
         subsidyProgram = subsidyProgram_;
         token = IERC20(tokenAddress);

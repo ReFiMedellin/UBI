@@ -2,9 +2,15 @@
 src = "src"
 out = "out"
 libs = ["lib"]
+evm_version = "paris"
+
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+
+[etherscan]
+celo = { key = "DV3QPMMQ8ZYG176IGWH7WHFEWB3UJYG7N2", url = "https://api.celoscan.io/api" }
 
 [rpc_endpoints]
 anvil = "http://127.0.0.1:8545"
 alfajores = "https://alfajores-forno.celo-testnet.org"
+celo = "https://rpc.ankr.com/celo"
