@@ -3,8 +3,8 @@ import FundsCard from '@/components/pages/admin/FundsCard';
 
 function AdminPanel() {
   return (
-    <div className='grid grid-cols-3 h-[80vh]'>
-      <div className='flex flex-col h-full w-full col-start-1 col-span-1'>
+    <div className='grid grid-cols-3 h-full gap-10'>
+      <div className='flex flex-col h-full w-full col-start-1  gap-10 col-span-1'>
         <BeneficiariesCard />
         <FundsCard />
       </div>
