@@ -1,0 +1,75 @@
+type BeneficiaryAdded @entity(immutable: true) {
+  id: Bytes!
+  beneficiaryAddress: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type BeneficiaryRemoved @entity(immutable: true) {
+  id: Bytes!
+  beneficiaryAddress: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ClaimIntervalSet @entity(immutable: true) {
+  id: Bytes!
+  interval: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ClaimableAmountSet @entity(immutable: true) {
+  id: Bytes!
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type FundsAdded @entity(immutable: true) {
+  id: Bytes!
+  amount: BigInt! # uint256
+  contractBalance: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type FundsWithdrawed @entity(immutable: true) {
+  id: Bytes!
+  amountWithdrawed: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SubsidyClaimed @entity(immutable: true) {
+  id: Bytes!
+  beneficiaryAddress: Bytes! # address
+  amount: BigInt! # uint256
+  contractBalance: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TokenAddressSet @entity(immutable: true) {
+  id: Bytes!
+  tokenAddress: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
