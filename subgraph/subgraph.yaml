@@ -33,18 +33,6 @@ dataSources:
           handler: handleBeneficiaryAdded
         - event: BeneficiaryRemoved(indexed address)
           handler: handleBeneficiaryRemoved
-        - event: ClaimIntervalSet(uint256)
-          handler: handleClaimIntervalSet
-        - event: ClaimableAmountSet(uint256)
-          handler: handleClaimableAmountSet
-        - event: FundsAdded(uint256,uint256)
-          handler: handleFundsAdded
-        - event: FundsWithdrawed(uint256)
-          handler: handleFundsWithdrawed
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
         - event: SubsidyClaimed(indexed address,uint256,uint256)
           handler: handleSubsidyClaimed
-        - event: TokenAddressSet(address)
-          handler: handleTokenAddressSet
       file: ./src/subsidy-program.ts
