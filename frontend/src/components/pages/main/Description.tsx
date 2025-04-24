@@ -20,7 +20,7 @@ function Description({
     if (!isWhiteListed)
       return (
         <Button variant='link' asChild>
-          <a target='_blank' href='#'>
+          <a target='_blank' href='https://tinyurl.com/ReFiMedUBIRequest'>
             Registrate aquí
           </a>
         </Button>
