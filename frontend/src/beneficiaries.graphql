@@ -1,0 +1,9 @@
+query Beneficiaries {
+  beneficiaries {
+    id
+    totalClaimed
+    dateAdded
+    dateRemoved
+    isActive
+  }
+}
