@@ -1,0 +1,7 @@
+type Beneficiary @entity(immutable: false) {
+  id: Bytes!
+  totalClaimed: BigInt! # uint256
+  dateAdded: BigInt!
+  dateRemoved: BigInt
+  isActive: Boolean!,
+}

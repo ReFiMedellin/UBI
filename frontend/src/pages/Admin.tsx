@@ -1,5 +1,7 @@
 import BeneficiariesCard from '@/components/pages/admin/BeneficiariesCard';
 import FundsCard from '@/components/pages/admin/FundsCard';
+import Dashboard from '@/components/pages/admin/Dashboard';
+
 
 function AdminPanel() {
   return (
@@ -8,8 +10,8 @@ function AdminPanel() {
         <BeneficiariesCard />
         <FundsCard />
       </div>
-      <div className='flex justify-center items-center col-start-2 col-span-2 border-2 border-dashed rounded-[12px] border-[#a1a1aa] h-full w-full'>
-        <p className='text-4xl font-bold'>Se integrara pronto!</p>
+      <div className='flex justify-center col-start-2 col-span-2 max-h-[75vh] w-full overflow-auto'>
+        <Dashboard />
       </div>
     </div>
   );
