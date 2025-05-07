@@ -35,4 +35,8 @@ dataSources:
           handler: handleBeneficiaryRemoved
         - event: SubsidyClaimed(indexed address,uint256,uint256)
           handler: handleSubsidyClaimed
+        - event: FundsAdded(uint256,uint256)
+          handler: handleFundsAdded
+        - event: FundsWithdrawed(uint256)
+          handler: handleFundsWithdrawed
       file: ./src/subsidy-program.ts

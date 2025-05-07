@@ -122,6 +122,70 @@ export type Block_height = {
   number_gte?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type Funds = {
+  id: Scalars['Bytes']['output'];
+  totalSupplied: Scalars['BigInt']['output'];
+  totalWithdrawn: Scalars['BigInt']['output'];
+  totalClaimed: Scalars['BigInt']['output'];
+  contractBalance: Scalars['BigInt']['output'];
+};
+
+export type Funds_filter = {
+  id?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not?: InputMaybe<Scalars['Bytes']['input']>;
+  id_gt?: InputMaybe<Scalars['Bytes']['input']>;
+  id_lt?: InputMaybe<Scalars['Bytes']['input']>;
+  id_gte?: InputMaybe<Scalars['Bytes']['input']>;
+  id_lte?: InputMaybe<Scalars['Bytes']['input']>;
+  id_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  id_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  id_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  totalSupplied?: InputMaybe<Scalars['BigInt']['input']>;
+  totalSupplied_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalSupplied_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalSupplied_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalSupplied_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalSupplied_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalSupplied_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalSupplied_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalWithdrawn?: InputMaybe<Scalars['BigInt']['input']>;
+  totalWithdrawn_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalWithdrawn_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalWithdrawn_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalWithdrawn_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalWithdrawn_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalWithdrawn_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalWithdrawn_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalClaimed?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaimed_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaimed_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaimed_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaimed_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaimed_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaimed_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalClaimed_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  contractBalance?: InputMaybe<Scalars['BigInt']['input']>;
+  contractBalance_not?: InputMaybe<Scalars['BigInt']['input']>;
+  contractBalance_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  contractBalance_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  contractBalance_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  contractBalance_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  contractBalance_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  contractBalance_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<Funds_filter>>>;
+  or?: InputMaybe<Array<InputMaybe<Funds_filter>>>;
+};
+
+export type Funds_orderBy =
+  | 'id'
+  | 'totalSupplied'
+  | 'totalWithdrawn'
+  | 'totalClaimed'
+  | 'contractBalance';
+
 /** Defines the order direction, either ascending or descending */
 export type OrderDirection =
   | 'asc'
@@ -130,6 +194,8 @@ export type OrderDirection =
 export type Query = {
   beneficiary?: Maybe<Beneficiary>;
   beneficiaries: Array<Beneficiary>;
+  funds?: Maybe<Funds>;
+  funds_collection: Array<Funds>;
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
 };
@@ -148,6 +214,24 @@ export type QuerybeneficiariesArgs = {
   orderBy?: InputMaybe<Beneficiary_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   where?: InputMaybe<Beneficiary_filter>;
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryfundsArgs = {
+  id: Scalars['ID']['input'];
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type Queryfunds_collectionArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Funds_orderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  where?: InputMaybe<Funds_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -287,6 +371,9 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Bytes: ResolverTypeWrapper<Scalars['Bytes']['output']>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
+  Funds: ResolverTypeWrapper<Funds>;
+  Funds_filter: Funds_filter;
+  Funds_orderBy: Funds_orderBy;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Int8: ResolverTypeWrapper<Scalars['Int8']['output']>;
@@ -310,6 +397,8 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
   Bytes: Scalars['Bytes']['output'];
   Float: Scalars['Float']['output'];
+  Funds: Funds;
+  Funds_filter: Funds_filter;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Int8: Scalars['Int8']['output'];
@@ -357,6 +446,15 @@ export interface BytesScalarConfig extends GraphQLScalarTypeConfig<ResolversType
   name: 'Bytes';
 }
 
+export type FundsResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Funds'] = ResolversParentTypes['Funds']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
+  totalSupplied?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  totalWithdrawn?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  totalClaimed?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  contractBalance?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export interface Int8ScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Int8'], any> {
   name: 'Int8';
 }
@@ -364,6 +462,8 @@ export interface Int8ScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 export type QueryResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   beneficiary?: Resolver<Maybe<ResolversTypes['Beneficiary']>, ParentType, ContextType, RequireFields<QuerybeneficiaryArgs, 'id' | 'subgraphError'>>;
   beneficiaries?: Resolver<Array<ResolversTypes['Beneficiary']>, ParentType, ContextType, RequireFields<QuerybeneficiariesArgs, 'skip' | 'first' | 'subgraphError'>>;
+  funds?: Resolver<Maybe<ResolversTypes['Funds']>, ParentType, ContextType, RequireFields<QueryfundsArgs, 'id' | 'subgraphError'>>;
+  funds_collection?: Resolver<Array<ResolversTypes['Funds']>, ParentType, ContextType, RequireFields<Queryfunds_collectionArgs, 'skip' | 'first' | 'subgraphError'>>;
   _meta?: Resolver<Maybe<ResolversTypes['_Meta_']>, ParentType, ContextType, Partial<Query_metaArgs>>;
 }>;
 
@@ -391,6 +491,7 @@ export type Resolvers<ContextType = MeshContext> = ResolversObject<{
   BigDecimal?: GraphQLScalarType;
   BigInt?: GraphQLScalarType;
   Bytes?: GraphQLScalarType;
+  Funds?: FundsResolvers<ContextType>;
   Int8?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
   Timestamp?: GraphQLScalarType;
@@ -470,7 +571,8 @@ const merger = new(BareMerger as any)({
         store: rootStore.child('bareMerger')
       })
 const documentHashMap = {
-        "e4d2a0843663c4348f8c652badafc03db3f31261bc912de14d9369c9df595876": BeneficiariesDocument
+        "e4d2a0843663c4348f8c652badafc03db3f31261bc912de14d9369c9df595876": BeneficiariesDocument,
+"5fdb2969dcb8c7152241c2b73c1ee4d8a48eb0dce7aa9993c46d1f9e6d491664": FundsDocument
       }
 additionalEnvelopPlugins.push(usePersistedOperations({
         getPersistedOperation(key) {
@@ -498,6 +600,13 @@ additionalEnvelopPlugins.push(usePersistedOperations({
         },
         location: 'BeneficiariesDocument.graphql',
         sha256Hash: 'e4d2a0843663c4348f8c652badafc03db3f31261bc912de14d9369c9df595876'
+      },{
+        document: FundsDocument,
+        get rawSDL() {
+          return printWithCache(FundsDocument);
+        },
+        location: 'FundsDocument.graphql',
+        sha256Hash: '5fdb2969dcb8c7152241c2b73c1ee4d8a48eb0dce7aa9993c46d1f9e6d491664'
       }
     ];
     },
@@ -557,6 +666,11 @@ export type BeneficiariesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type BeneficiariesQuery = { beneficiaries: Array<Pick<Beneficiary, 'id' | 'totalClaimed' | 'dateAdded' | 'dateRemoved' | 'isActive'>> };
 
+export type FundsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FundsQuery = { funds_collection: Array<Pick<Funds, 'id' | 'totalSupplied' | 'totalWithdrawn' | 'totalClaimed' | 'contractBalance'>> };
+
 
 export const BeneficiariesDocument = gql`
     query Beneficiaries {
@@ -569,6 +683,18 @@ export const BeneficiariesDocument = gql`
   }
 }
     ` as unknown as DocumentNode<BeneficiariesQuery, BeneficiariesQueryVariables>;
+export const FundsDocument = gql`
+    query Funds {
+  funds_collection(where: {id: "0x947c6db1569edc9fd37b017b791ca0f008ab4946"}) {
+    id
+    totalSupplied
+    totalWithdrawn
+    totalClaimed
+    contractBalance
+  }
+}
+    ` as unknown as DocumentNode<FundsQuery, FundsQueryVariables>;
+
 
 
 export type Requester<C = {}, E = unknown> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>
@@ -576,6 +702,9 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
   return {
     Beneficiaries(variables?: BeneficiariesQueryVariables, options?: C): Promise<BeneficiariesQuery> {
       return requester<BeneficiariesQuery, BeneficiariesQueryVariables>(BeneficiariesDocument, variables, options) as Promise<BeneficiariesQuery>;
+    },
+    Funds(variables?: FundsQueryVariables, options?: C): Promise<FundsQuery> {
+      return requester<FundsQuery, FundsQueryVariables>(FundsDocument, variables, options) as Promise<FundsQuery>;
     }
   };
 }

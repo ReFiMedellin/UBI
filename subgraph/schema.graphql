@@ -5,3 +5,11 @@ type Beneficiary @entity(immutable: false) {
   dateRemoved: BigInt
   isActive: Boolean!,
 }
+
+type Funds @entity(immutable: false) {
+  id: Bytes!
+  totalSupplied: BigInt! # uint256
+  totalWithdrawn: BigInt! # uint256
+  totalClaimed: BigInt! # uint256
+  contractBalance: BigInt! # uint256
+}
