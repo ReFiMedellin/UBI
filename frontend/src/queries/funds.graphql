@@ -1,0 +1,9 @@
+query Funds {
+  funds_collection(where: { id: "0x947c6db1569edc9fd37b017b791ca0f008ab4946" }){
+    id
+    totalSupplied
+    totalWithdrawn
+    totalClaimed
+    contractBalance
+  }
+}

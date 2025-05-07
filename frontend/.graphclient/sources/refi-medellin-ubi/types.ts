@@ -99,6 +99,70 @@ export type Block_height = {
   number_gte?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type Funds = {
+  id: Scalars['Bytes']['output'];
+  totalSupplied: Scalars['BigInt']['output'];
+  totalWithdrawn: Scalars['BigInt']['output'];
+  totalClaimed: Scalars['BigInt']['output'];
+  contractBalance: Scalars['BigInt']['output'];
+};
+
+export type Funds_filter = {
+  id?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not?: InputMaybe<Scalars['Bytes']['input']>;
+  id_gt?: InputMaybe<Scalars['Bytes']['input']>;
+  id_lt?: InputMaybe<Scalars['Bytes']['input']>;
+  id_gte?: InputMaybe<Scalars['Bytes']['input']>;
+  id_lte?: InputMaybe<Scalars['Bytes']['input']>;
+  id_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  id_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  id_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  totalSupplied?: InputMaybe<Scalars['BigInt']['input']>;
+  totalSupplied_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalSupplied_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalSupplied_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalSupplied_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalSupplied_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalSupplied_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalSupplied_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalWithdrawn?: InputMaybe<Scalars['BigInt']['input']>;
+  totalWithdrawn_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalWithdrawn_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalWithdrawn_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalWithdrawn_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalWithdrawn_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalWithdrawn_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalWithdrawn_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalClaimed?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaimed_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaimed_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaimed_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaimed_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaimed_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaimed_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalClaimed_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  contractBalance?: InputMaybe<Scalars['BigInt']['input']>;
+  contractBalance_not?: InputMaybe<Scalars['BigInt']['input']>;
+  contractBalance_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  contractBalance_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  contractBalance_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  contractBalance_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  contractBalance_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  contractBalance_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<Funds_filter>>>;
+  or?: InputMaybe<Array<InputMaybe<Funds_filter>>>;
+};
+
+export type Funds_orderBy =
+  | 'id'
+  | 'totalSupplied'
+  | 'totalWithdrawn'
+  | 'totalClaimed'
+  | 'contractBalance';
+
 /** Defines the order direction, either ascending or descending */
 export type OrderDirection =
   | 'asc'
@@ -107,6 +171,8 @@ export type OrderDirection =
 export type Query = {
   beneficiary?: Maybe<Beneficiary>;
   beneficiaries: Array<Beneficiary>;
+  funds?: Maybe<Funds>;
+  funds_collection: Array<Funds>;
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
 };
@@ -125,6 +191,24 @@ export type QuerybeneficiariesArgs = {
   orderBy?: InputMaybe<Beneficiary_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   where?: InputMaybe<Beneficiary_filter>;
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryfundsArgs = {
+  id: Scalars['ID']['input'];
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type Queryfunds_collectionArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Funds_orderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  where?: InputMaybe<Funds_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -172,6 +256,10 @@ export type _SubgraphErrorPolicy_ =
   beneficiary: InContextSdkMethod<Query['beneficiary'], QuerybeneficiaryArgs, MeshContext>,
   /** null **/
   beneficiaries: InContextSdkMethod<Query['beneficiaries'], QuerybeneficiariesArgs, MeshContext>,
+  /** null **/
+  funds: InContextSdkMethod<Query['funds'], QueryfundsArgs, MeshContext>,
+  /** null **/
+  funds_collection: InContextSdkMethod<Query['funds_collection'], Queryfunds_collectionArgs, MeshContext>,
   /** Access to subgraph metadata **/
   _meta: InContextSdkMethod<Query['_meta'], Query_metaArgs, MeshContext>
   };

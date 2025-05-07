@@ -5,4 +5,5 @@ sources:
         endpoint: https://api.studio.thegraph.com/query/102458/refi-medellin-ubi/version/latest
 
 documents:
-  - ./src/beneficiaries.graphql
+  - ./src/queries/beneficiaries.graphql
+  - ./src/queries/funds.graphql

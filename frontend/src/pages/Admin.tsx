@@ -10,7 +10,7 @@ function AdminPanel() {
         <BeneficiariesCard />
         <FundsCard />
       </div>
-      <div className='flex justify-center col-start-2 col-span-2 max-h-[75vh] w-full overflow-auto'>
+      <div className='flex justify-center col-start-2 col-span-2 max-h-[75vh] w-full'>
         <Dashboard />
       </div>
     </div>
