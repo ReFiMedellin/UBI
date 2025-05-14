@@ -65,17 +65,17 @@ function Dashboard() {
             <Table>
               <TableHeader className='sticky top-0 bg-background'>
                 <TableRow>
-                  <TableHead className='font-bold'>Dirección</TableHead>
-                  <TableHead onClick={() => requestSort('isActive')} className='font-bold cursor-pointer'>
+                  <TableHead className='font-bold min-w-[100px]'>Dirección</TableHead>
+                  <TableHead onClick={() => requestSort('isActive')} className='font-bold cursor-pointer min-w-[80px]'>
                     Activo { SortIcon() }
                   </TableHead>
-                  <TableHead onClick={() => requestSort('dateAdded')} className='font-bold cursor-pointer'>
+                  <TableHead onClick={() => requestSort('dateAdded')} className='font-bold cursor-pointer min-w-[120px]'>
                     Fecha añadido { SortIcon() }
                   </TableHead>
-                  <TableHead onClick={() => requestSort('dateRemoved')} className='font-bold cursor-pointer'>
+                  <TableHead onClick={() => requestSort('dateRemoved')} className='font-bold cursor-pointer min-w-[120px]'>
                     Fecha eliminado { SortIcon() }
                   </TableHead>
-                  <TableHead onClick={() => requestSort('totalClaimed')} className='text-right font-bold cursor-pointer'>
+                  <TableHead onClick={() => requestSort('totalClaimed')} className='text-right font-bold cursor-pointer min-w-[150px]'>
                     Total Reclamado { SortIcon() }
                   </TableHead>
                 </TableRow>
@@ -83,18 +83,18 @@ function Dashboard() {
               <TableBody className='text-left'>
                 {sortedBeneficiaries.map((beneficiary) => (
                   <TableRow key={beneficiary.id}>
-                    <TableCell className='cursor-pointer' onClick={() => {
+                    <TableCell className='cursor-pointer whitespace-nowrap' onClick={() => {
                       navigator.clipboard.writeText(beneficiary.id);
                       toast({ title: 'Dirección copiada al portapapeles'})
                     }}>
                       {String(beneficiary.id).slice(0, 7)}...{String(beneficiary.id).slice(-5)}
                     </TableCell>
-                    <TableCell>{beneficiary.isActive ? "Sí" : "No"}</TableCell>
-                    <TableCell>{(new Date(beneficiary.dateAdded * 1000)).toLocaleDateString()}</TableCell>
-                    <TableCell>{beneficiary.dateRemoved ? 
+                    <TableCell className='whitespace-nowrap'>{beneficiary.isActive ? "Sí" : "No"}</TableCell>
+                    <TableCell className='whitespace-nowrap'>{(new Date(beneficiary.dateAdded * 1000)).toLocaleDateString()}</TableCell>
+                    <TableCell className='whitespace-nowrap'>{beneficiary.dateRemoved ? 
                       (new Date(beneficiary.dateRemoved*1000)).toLocaleDateString()
                     : "-"}</TableCell>
-                    <TableCell className='text-right'>{new Intl.NumberFormat('es-CO', {
+                    <TableCell className='text-right whitespace-nowrap'>{new Intl.NumberFormat('es-CO', {
                 style: 'currency',
                 currency: 'COP',
               }).format(Number(formatUnits(beneficiary.totalClaimed, 18)))}</TableCell>
