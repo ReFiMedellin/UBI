@@ -13,3 +13,18 @@ type Funds @entity(immutable: false) {
   totalClaimed: BigInt! # uint256
   contractBalance: BigInt! # uint256
 }
+
+type DailyClaim @entity(immutable: false) {
+  id: ID! # format: YYYY-MM-DD
+  date: BigInt!
+  totalClaims: BigInt!
+  totalAmount: BigInt!
+  beneficiaries: [Bytes!]! # List of beneficiary addresses who claimed on this day
+}
+
+# type DailyActiveBeneficiaries @entity(immutable: false) {
+#   id: ID! # format: YYYY-MM-DD
+#   date: BigInt!
+#   count: BigInt!
+#   beneficiaries: [Bytes!]! # List of active beneficiary addresses on this day
+# }

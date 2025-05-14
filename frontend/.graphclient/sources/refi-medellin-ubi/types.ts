@@ -99,6 +99,66 @@ export type Block_height = {
   number_gte?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type DailyClaim = {
+  id: Scalars['ID']['output'];
+  date: Scalars['BigInt']['output'];
+  totalClaims: Scalars['BigInt']['output'];
+  totalAmount: Scalars['BigInt']['output'];
+  beneficiaries: Array<Scalars['Bytes']['output']>;
+};
+
+export type DailyClaim_filter = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  date?: InputMaybe<Scalars['BigInt']['input']>;
+  date_not?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  date_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalClaims?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaims_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaims_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaims_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaims_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaims_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaims_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalClaims_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalAmount?: InputMaybe<Scalars['BigInt']['input']>;
+  totalAmount_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalAmount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalAmount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalAmount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalAmount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalAmount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalAmount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  beneficiaries?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  beneficiaries_not?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  beneficiaries_contains?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  beneficiaries_contains_nocase?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  beneficiaries_not_contains?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  beneficiaries_not_contains_nocase?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<DailyClaim_filter>>>;
+  or?: InputMaybe<Array<InputMaybe<DailyClaim_filter>>>;
+};
+
+export type DailyClaim_orderBy =
+  | 'id'
+  | 'date'
+  | 'totalClaims'
+  | 'totalAmount'
+  | 'beneficiaries';
+
 export type Funds = {
   id: Scalars['Bytes']['output'];
   totalSupplied: Scalars['BigInt']['output'];
@@ -173,6 +233,8 @@ export type Query = {
   beneficiaries: Array<Beneficiary>;
   funds?: Maybe<Funds>;
   funds_collection: Array<Funds>;
+  dailyClaim?: Maybe<DailyClaim>;
+  dailyClaims: Array<DailyClaim>;
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
 };
@@ -209,6 +271,24 @@ export type Queryfunds_collectionArgs = {
   orderBy?: InputMaybe<Funds_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   where?: InputMaybe<Funds_filter>;
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QuerydailyClaimArgs = {
+  id: Scalars['ID']['input'];
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QuerydailyClaimsArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<DailyClaim_orderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  where?: InputMaybe<DailyClaim_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -260,6 +340,10 @@ export type _SubgraphErrorPolicy_ =
   funds: InContextSdkMethod<Query['funds'], QueryfundsArgs, MeshContext>,
   /** null **/
   funds_collection: InContextSdkMethod<Query['funds_collection'], Queryfunds_collectionArgs, MeshContext>,
+  /** null **/
+  dailyClaim: InContextSdkMethod<Query['dailyClaim'], QuerydailyClaimArgs, MeshContext>,
+  /** null **/
+  dailyClaims: InContextSdkMethod<Query['dailyClaims'], QuerydailyClaimsArgs, MeshContext>,
   /** Access to subgraph metadata **/
   _meta: InContextSdkMethod<Query['_meta'], Query_metaArgs, MeshContext>
   };

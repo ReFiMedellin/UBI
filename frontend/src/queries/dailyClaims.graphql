@@ -1,0 +1,8 @@
+query DailyClaims {
+  dailyClaims(first: 30, orderBy: date, orderDirection: desc) {
+    id
+    date
+    totalClaims
+    totalAmount
+  }
+} 

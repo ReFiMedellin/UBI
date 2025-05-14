@@ -6,6 +6,8 @@ import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useMemo, useState } from 'react';
 import { ArrowUpDown } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import DailyClaimsCard from './DailyClaimsCard';
 
 const sdk = getBuiltGraphSDK();
 
@@ -14,13 +16,8 @@ function Dashboard() {
   const { toast } = useToast();
   const [sortConfig, setSortConfig] = useState<{key: beneficiary_fields; direction: 'asc' | 'desc' } | null>(null);
 
-
   const result_beneficiaries = useQuery({ queryKey: ['Beneficiaries'], queryFn: () => sdk.Beneficiaries() });
-  const result_funds = useQuery({ queryKey: ['Funds'], queryFn: () => sdk.Funds() });
-
   const { data: data_beneficiaries } = result_beneficiaries;
-  const { data: data_funds } = result_funds;
-  const funds = data_funds?.funds_collection[0];
 
   const sortedBeneficiaries = useMemo(() => {
     if (!data_beneficiaries?.beneficiaries) return [];
@@ -52,94 +49,84 @@ function Dashboard() {
     setSortConfig({ key, direction });
   }
 
-  console.log(data_beneficiaries?.beneficiaries[0])
-
   const SortIcon = () => {
     return <ArrowUpDown className='inline ml-1 w-4 h-4 relative top-[0.5px]'/>;
   };
 
   return (
-    <Card className='w-full p-[5px]'>
-    <div className='overflow-auto max-h-[80%]'>
-    <Table>
-      <TableHeader className='sticky top-0 bg-background'>
-        <TableRow>
-          <TableHead className='font-bold'>Dirección</TableHead>
-          <TableHead onClick={() => requestSort('isActive')} className='font-bold cursor-pointer'>
-            Activo { SortIcon() }
-          </TableHead>
-          <TableHead onClick={() => requestSort('dateAdded')} className='font-bold cursor-pointer'>
-            Fecha añadido { SortIcon() }
-          </TableHead>
-          <TableHead onClick={() => requestSort('dateRemoved')} className='font-bold cursor-pointer'>
-            Fecha eliminado { SortIcon() }
-          </TableHead>
-          <TableHead onClick={() => requestSort('totalClaimed')} className='text-right font-bold cursor-pointer'>
-            Total Reclamado { SortIcon() }
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody className='text-left'>
-        {sortedBeneficiaries.map((beneficiary) => (
-          <TableRow key={beneficiary.id}>
-            <TableCell className='cursor-pointer' onClick={() => {
-              navigator.clipboard.writeText(beneficiary.id);
-              toast({ title: 'Dirección copiada al portapapeles'})
-            }}>
-              {String(beneficiary.id).slice(0, 7)}...{String(beneficiary.id).slice(-5)}
-            </TableCell>
-            <TableCell>{beneficiary.isActive ? "Sí" : "No"}</TableCell>
-            <TableCell>{(new Date(beneficiary.dateAdded * 1000)).toLocaleDateString()}</TableCell>
-            <TableCell>{beneficiary.dateRemoved ? 
-              (new Date(beneficiary.dateRemoved*1000)).toLocaleDateString()
-            : "-"}</TableCell>
-            <TableCell className='text-right'>{new Intl.NumberFormat('es-CO', {
-        style: 'currency',
-        currency: 'COP',
-      }).format(Number(formatUnits(beneficiary.totalClaimed, 18)))}</TableCell>
-          </TableRow>
-        ))
-
-        }
-      </TableBody>
-    </Table>
-    </div>
-    {/* Recuento de fondos */}
-  <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-    <div className="p-4 border rounded-md shadow-sm">
-      <p className="text-muted-foreground">Total aportado</p>
-      <p className="font-bold">
-        {new Intl.NumberFormat(
-          "es-CO", { style: "currency", currency: "COP" }
-        ).format(Number(formatUnits(funds ? funds.totalSupplied : 0, 18)))}
-      </p>
-    </div>
-    <div className="p-4 border rounded-md shadow-sm">
-      <p className="text-muted-foreground">Total retirado</p>
-      <p className="font-bold">
-        {new Intl.NumberFormat(
-          "es-CO", { style: "currency", currency: "COP" }
-        ).format(Number(formatUnits(funds ? funds.totalWithdrawn : 0, 18)))}
-      </p>
-    </div>
-    <div className="p-4 border rounded-md shadow-sm">
-      <p className="text-muted-foreground">Total reclamado</p>
-      <p className="font-bold">
-        {new Intl.NumberFormat(
-          "es-CO", { style: "currency", currency: "COP" }
-        ).format(Number(formatUnits(funds ? funds.totalClaimed : 0, 18)))}
-      </p>
-    </div>
-    <div className="p-4 border rounded-md shadow-sm">
-      <p className="text-muted-foreground">Balance actual</p>
-      <p className="font-bold">
-        {new Intl.NumberFormat(
-          "es-CO", { style: "currency", currency: "COP" }
-        ).format(Number(formatUnits(funds ? funds.contractBalance : 0, 18)))}
-      </p>
-    </div>
-  </div>
-    </Card>
+    <Tabs defaultValue="claims" className="w-full h-full flex flex-col">
+      <TabsList className="grid w-full grid-cols-2 p-2 gap-x-1 tabline">
+        <TabsTrigger value="claims" className="tab-button">Fondos</TabsTrigger>
+        <TabsTrigger value="beneficiaries" className="tab-button">Beneficiarios</TabsTrigger>
+      </TabsList>
+      <TabsContent value="beneficiaries" className="max-h-[92%]">
+        <Card className='w-full h-full flex flex-col mt-2'>
+          <div className='flex-1 overflow-auto p-[5px]'>
+            <Table>
+              <TableHeader className='sticky top-0 bg-background'>
+                <TableRow>
+                  <TableHead className='font-bold'>Dirección</TableHead>
+                  <TableHead onClick={() => requestSort('isActive')} className='font-bold cursor-pointer'>
+                    Activo { SortIcon() }
+                  </TableHead>
+                  <TableHead onClick={() => requestSort('dateAdded')} className='font-bold cursor-pointer'>
+                    Fecha añadido { SortIcon() }
+                  </TableHead>
+                  <TableHead onClick={() => requestSort('dateRemoved')} className='font-bold cursor-pointer'>
+                    Fecha eliminado { SortIcon() }
+                  </TableHead>
+                  <TableHead onClick={() => requestSort('totalClaimed')} className='text-right font-bold cursor-pointer'>
+                    Total Reclamado { SortIcon() }
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className='text-left'>
+                {sortedBeneficiaries.map((beneficiary) => (
+                  <TableRow key={beneficiary.id}>
+                    <TableCell className='cursor-pointer' onClick={() => {
+                      navigator.clipboard.writeText(beneficiary.id);
+                      toast({ title: 'Dirección copiada al portapapeles'})
+                    }}>
+                      {String(beneficiary.id).slice(0, 7)}...{String(beneficiary.id).slice(-5)}
+                    </TableCell>
+                    <TableCell>{beneficiary.isActive ? "Sí" : "No"}</TableCell>
+                    <TableCell>{(new Date(beneficiary.dateAdded * 1000)).toLocaleDateString()}</TableCell>
+                    <TableCell>{beneficiary.dateRemoved ? 
+                      (new Date(beneficiary.dateRemoved*1000)).toLocaleDateString()
+                    : "-"}</TableCell>
+                    <TableCell className='text-right'>{new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+              }).format(Number(formatUnits(beneficiary.totalClaimed, 18)))}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border-t text-sm">
+            <div className="p-4 border rounded-md shadow-sm">
+              <p className="text-muted-foreground">Beneficiarios activos</p>
+              <p className="font-bold text-lg">
+                {sortedBeneficiaries.filter(b => b.isActive).length}
+              </p>
+            </div>
+            <div className="p-4 border rounded-md shadow-sm">
+              <p className="text-muted-foreground">Promedio reclamado por beneficiario</p>
+              <p className="font-bold text-lg">
+                {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(
+                  sortedBeneficiaries.length > 0
+                    ? sortedBeneficiaries.reduce((acc, b) => acc + Number(formatUnits(b.totalClaimed, 18)), 0) / sortedBeneficiaries.length
+                    : 0
+                )}
+              </p>
+            </div>
+          </div>
+        </Card>
+      </TabsContent>
+      <TabsContent value="claims" className="flex-1">
+        <DailyClaimsCard />
+      </TabsContent>
+    </Tabs>
   );
 }
 
