@@ -7,3 +7,4 @@ sources:
 documents:
   - ./src/queries/beneficiaries.graphql
   - ./src/queries/funds.graphql
+  - ./src/queries/dailyClaims.graphql

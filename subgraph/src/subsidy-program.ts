@@ -1,4 +1,4 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
 import {
   BeneficiaryAdded as BeneficiaryAddedEvent,
   BeneficiaryRemoved as BeneficiaryRemovedEvent,
@@ -9,7 +9,25 @@ import {
 import {
   Beneficiary,
   Funds,
+  DailyClaim,
 } from "../generated/schema"
+
+// Helper function to get or create DailyClaim entity
+function getOrCreateDailyClaim(timestamp: BigInt): DailyClaim {
+  let day = timestamp.toI32() / 86400 // Convert to days
+  let id = day.toString()
+  let dailyClaim = DailyClaim.load(id)
+  
+  if (!dailyClaim) {
+    dailyClaim = new DailyClaim(id)
+    dailyClaim.date = timestamp
+    dailyClaim.totalClaims = BigInt.zero()
+    dailyClaim.totalAmount = BigInt.zero()
+    dailyClaim.beneficiaries = []
+  }
+  
+  return dailyClaim
+}
 
 function getOrCreateFunds(address: Address): Funds {
   let funds = Funds.load(address)
@@ -58,6 +76,20 @@ export function handleSubsidyClaimed(event: SubsidyClaimedEvent): void {
 
   entity.save()
   funds.save()
+  
+  // Update daily claims
+  let dailyClaim = getOrCreateDailyClaim(event.block.timestamp)
+  dailyClaim.totalClaims = dailyClaim.totalClaims.plus(BigInt.fromI32(1))
+  dailyClaim.totalAmount = dailyClaim.totalAmount.plus(event.params.amount)
+  
+  // Add beneficiary to the list if not already present
+  let beneficiaries = dailyClaim.beneficiaries
+  if (!beneficiaries.includes(event.params.beneficiaryAddress)) {
+    beneficiaries.push(event.params.beneficiaryAddress)
+    dailyClaim.beneficiaries = beneficiaries
+  }
+  
+  dailyClaim.save()
 }
 
 export function handleFundsAdded(event: FundsAddedEvent): void {

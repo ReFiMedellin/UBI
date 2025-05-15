@@ -140,7 +140,7 @@ function FundsCard() {
   };
 
   return (
-    <Tabs defaultValue='add' className='w-[350px] h-full flex-1'>
+    <Tabs defaultValue='add' className='w-full md:w-[350px] h-full flex-1'>
       <TabsList className='grid w-full grid-cols-2 p-2 gap-x-1 tabline'>
         <TabsTrigger value='add' className='tab-button'>
           Fondear
@@ -150,7 +150,7 @@ function FundsCard() {
         </TabsTrigger>
       </TabsList>
       <TabsContent value='add'>
-        <Card className='w-[350px] my-2'>
+        <Card className='w-full md:w-[350px] my-2'>
           <form onSubmit={handleAddSubmit}>
             <CardHeader>
               <CardTitle>Añadir fondos</CardTitle>
@@ -169,7 +169,7 @@ function FundsCard() {
       </TabsContent>
       <TabsContent value='delete'>
         <form onSubmit={handleWithdrawSubmit}>
-          <Card className='w-[350px] my-2'>
+          <Card className='w-full md:w-[350px] my-2'>
             <CardHeader>
               <CardTitle>Retirar fondos</CardTitle>
             </CardHeader>

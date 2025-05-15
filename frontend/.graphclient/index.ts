@@ -122,6 +122,66 @@ export type Block_height = {
   number_gte?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type DailyClaim = {
+  id: Scalars['ID']['output'];
+  date: Scalars['BigInt']['output'];
+  totalClaims: Scalars['BigInt']['output'];
+  totalAmount: Scalars['BigInt']['output'];
+  beneficiaries: Array<Scalars['Bytes']['output']>;
+};
+
+export type DailyClaim_filter = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  date?: InputMaybe<Scalars['BigInt']['input']>;
+  date_not?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  date_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalClaims?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaims_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaims_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaims_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaims_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaims_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalClaims_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalClaims_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalAmount?: InputMaybe<Scalars['BigInt']['input']>;
+  totalAmount_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalAmount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalAmount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalAmount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalAmount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalAmount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalAmount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  beneficiaries?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  beneficiaries_not?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  beneficiaries_contains?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  beneficiaries_contains_nocase?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  beneficiaries_not_contains?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  beneficiaries_not_contains_nocase?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<DailyClaim_filter>>>;
+  or?: InputMaybe<Array<InputMaybe<DailyClaim_filter>>>;
+};
+
+export type DailyClaim_orderBy =
+  | 'id'
+  | 'date'
+  | 'totalClaims'
+  | 'totalAmount'
+  | 'beneficiaries';
+
 export type Funds = {
   id: Scalars['Bytes']['output'];
   totalSupplied: Scalars['BigInt']['output'];
@@ -196,6 +256,8 @@ export type Query = {
   beneficiaries: Array<Beneficiary>;
   funds?: Maybe<Funds>;
   funds_collection: Array<Funds>;
+  dailyClaim?: Maybe<DailyClaim>;
+  dailyClaims: Array<DailyClaim>;
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
 };
@@ -232,6 +294,24 @@ export type Queryfunds_collectionArgs = {
   orderBy?: InputMaybe<Funds_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   where?: InputMaybe<Funds_filter>;
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QuerydailyClaimArgs = {
+  id: Scalars['ID']['input'];
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QuerydailyClaimsArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<DailyClaim_orderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  where?: InputMaybe<DailyClaim_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -370,6 +450,9 @@ export type ResolversTypes = ResolversObject<{
   Block_height: Block_height;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Bytes: ResolverTypeWrapper<Scalars['Bytes']['output']>;
+  DailyClaim: ResolverTypeWrapper<DailyClaim>;
+  DailyClaim_filter: DailyClaim_filter;
+  DailyClaim_orderBy: DailyClaim_orderBy;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   Funds: ResolverTypeWrapper<Funds>;
   Funds_filter: Funds_filter;
@@ -396,6 +479,8 @@ export type ResolversParentTypes = ResolversObject<{
   Block_height: Block_height;
   Boolean: Scalars['Boolean']['output'];
   Bytes: Scalars['Bytes']['output'];
+  DailyClaim: DailyClaim;
+  DailyClaim_filter: DailyClaim_filter;
   Float: Scalars['Float']['output'];
   Funds: Funds;
   Funds_filter: Funds_filter;
@@ -446,6 +531,15 @@ export interface BytesScalarConfig extends GraphQLScalarTypeConfig<ResolversType
   name: 'Bytes';
 }
 
+export type DailyClaimResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['DailyClaim'] = ResolversParentTypes['DailyClaim']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  date?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  totalClaims?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  totalAmount?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  beneficiaries?: Resolver<Array<ResolversTypes['Bytes']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type FundsResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Funds'] = ResolversParentTypes['Funds']> = ResolversObject<{
   id?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
   totalSupplied?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
@@ -464,6 +558,8 @@ export type QueryResolvers<ContextType = MeshContext, ParentType extends Resolve
   beneficiaries?: Resolver<Array<ResolversTypes['Beneficiary']>, ParentType, ContextType, RequireFields<QuerybeneficiariesArgs, 'skip' | 'first' | 'subgraphError'>>;
   funds?: Resolver<Maybe<ResolversTypes['Funds']>, ParentType, ContextType, RequireFields<QueryfundsArgs, 'id' | 'subgraphError'>>;
   funds_collection?: Resolver<Array<ResolversTypes['Funds']>, ParentType, ContextType, RequireFields<Queryfunds_collectionArgs, 'skip' | 'first' | 'subgraphError'>>;
+  dailyClaim?: Resolver<Maybe<ResolversTypes['DailyClaim']>, ParentType, ContextType, RequireFields<QuerydailyClaimArgs, 'id' | 'subgraphError'>>;
+  dailyClaims?: Resolver<Array<ResolversTypes['DailyClaim']>, ParentType, ContextType, RequireFields<QuerydailyClaimsArgs, 'skip' | 'first' | 'subgraphError'>>;
   _meta?: Resolver<Maybe<ResolversTypes['_Meta_']>, ParentType, ContextType, Partial<Query_metaArgs>>;
 }>;
 
@@ -491,6 +587,7 @@ export type Resolvers<ContextType = MeshContext> = ResolversObject<{
   BigDecimal?: GraphQLScalarType;
   BigInt?: GraphQLScalarType;
   Bytes?: GraphQLScalarType;
+  DailyClaim?: DailyClaimResolvers<ContextType>;
   Funds?: FundsResolvers<ContextType>;
   Int8?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
@@ -572,6 +669,7 @@ const merger = new(BareMerger as any)({
       })
 const documentHashMap = {
         "e4d2a0843663c4348f8c652badafc03db3f31261bc912de14d9369c9df595876": BeneficiariesDocument,
+"9906f4ef14d01263a96fc4d3b33baeccef5d243ea095e642cc72c29507eeed6a": DailyClaimsDocument,
 "5fdb2969dcb8c7152241c2b73c1ee4d8a48eb0dce7aa9993c46d1f9e6d491664": FundsDocument
       }
 additionalEnvelopPlugins.push(usePersistedOperations({
@@ -600,6 +698,13 @@ additionalEnvelopPlugins.push(usePersistedOperations({
         },
         location: 'BeneficiariesDocument.graphql',
         sha256Hash: 'e4d2a0843663c4348f8c652badafc03db3f31261bc912de14d9369c9df595876'
+      },{
+        document: DailyClaimsDocument,
+        get rawSDL() {
+          return printWithCache(DailyClaimsDocument);
+        },
+        location: 'DailyClaimsDocument.graphql',
+        sha256Hash: '9906f4ef14d01263a96fc4d3b33baeccef5d243ea095e642cc72c29507eeed6a'
       },{
         document: FundsDocument,
         get rawSDL() {
@@ -666,6 +771,11 @@ export type BeneficiariesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type BeneficiariesQuery = { beneficiaries: Array<Pick<Beneficiary, 'id' | 'totalClaimed' | 'dateAdded' | 'dateRemoved' | 'isActive'>> };
 
+export type DailyClaimsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DailyClaimsQuery = { dailyClaims: Array<Pick<DailyClaim, 'id' | 'date' | 'totalClaims' | 'totalAmount'>> };
+
 export type FundsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -683,6 +793,16 @@ export const BeneficiariesDocument = gql`
   }
 }
     ` as unknown as DocumentNode<BeneficiariesQuery, BeneficiariesQueryVariables>;
+export const DailyClaimsDocument = gql`
+    query DailyClaims {
+  dailyClaims(first: 30, orderBy: date, orderDirection: desc) {
+    id
+    date
+    totalClaims
+    totalAmount
+  }
+}
+    ` as unknown as DocumentNode<DailyClaimsQuery, DailyClaimsQueryVariables>;
 export const FundsDocument = gql`
     query Funds {
   funds_collection(where: {id: "0x947c6db1569edc9fd37b017b791ca0f008ab4946"}) {
@@ -697,11 +817,15 @@ export const FundsDocument = gql`
 
 
 
+
 export type Requester<C = {}, E = unknown> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>
 export function getSdk<C, E>(requester: Requester<C, E>) {
   return {
     Beneficiaries(variables?: BeneficiariesQueryVariables, options?: C): Promise<BeneficiariesQuery> {
       return requester<BeneficiariesQuery, BeneficiariesQueryVariables>(BeneficiariesDocument, variables, options) as Promise<BeneficiariesQuery>;
+    },
+    DailyClaims(variables?: DailyClaimsQueryVariables, options?: C): Promise<DailyClaimsQuery> {
+      return requester<DailyClaimsQuery, DailyClaimsQueryVariables>(DailyClaimsDocument, variables, options) as Promise<DailyClaimsQuery>;
     },
     Funds(variables?: FundsQueryVariables, options?: C): Promise<FundsQuery> {
       return requester<FundsQuery, FundsQueryVariables>(FundsDocument, variables, options) as Promise<FundsQuery>;

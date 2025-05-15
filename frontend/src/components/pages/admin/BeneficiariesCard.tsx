@@ -79,13 +79,13 @@ function BeneficiariesCard() {
   }, [isSuccess])
   
   return (
-    <Tabs defaultValue="add" className="w-[350px] h-full flex-1">
+    <Tabs defaultValue="add" className="w-full md:w-[350px] h-full flex-1">
       <TabsList className="grid w-full grid-cols-2 p-2 gap-x-1 tabline">
         <TabsTrigger value="add" className="tab-button">Añadir</TabsTrigger>
         <TabsTrigger value="delete" className="tab-button">Eliminar</TabsTrigger>
       </TabsList>
       <TabsContent value="add">
-        <Card className="w-[350px] my-2">
+        <Card className="w-full md:w-[350px] my-2">
         <form onSubmit={ handleAddSubmit } >
           <CardHeader>
             <CardTitle>Añadir beneficiario</CardTitle>
@@ -101,7 +101,7 @@ function BeneficiariesCard() {
         </Card>
       </TabsContent>
       <TabsContent value="delete">
-        <Card className="w-[350px] my-2">
+        <Card className="w-full md:w-[350px] my-2">
         <form onSubmit={ handleDeleteSubmit }>
           <CardHeader>
             <CardTitle>Eliminar beneficiario</CardTitle>
