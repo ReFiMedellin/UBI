@@ -55,15 +55,15 @@ function Dashboard() {
 
   return (
     <Tabs defaultValue="claims" className="w-full h-full flex flex-col">
-      <TabsList className="grid w-full grid-cols-2 p-2 gap-x-1 tabline">
-        <TabsTrigger value="claims" className="tab-button">Fondos</TabsTrigger>
-        <TabsTrigger value="beneficiaries" className="tab-button">Beneficiarios</TabsTrigger>
+      <TabsList className="grid w-full grid-cols-2 p-1 gap-x-2 bg-gray-100 rounded-xl mb-4">
+        <TabsTrigger value="claims" className="tab-button data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=inactive]:bg-gray-200 data-[state=inactive]:text-gray-700 rounded-lg transition-colors">Fondos</TabsTrigger>
+        <TabsTrigger value="beneficiaries" className="tab-button data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=inactive]:bg-gray-200 data-[state=inactive]:text-gray-700 rounded-lg transition-colors">Beneficiarios</TabsTrigger>
       </TabsList>
-      <TabsContent value="beneficiaries" className="max-h-[92%]">
-        <Card className='w-full h-full flex flex-col mt-2'>
-          <div className='flex-1 overflow-auto p-[5px]'>
-            <Table>
-              <TableHeader className='sticky top-0 bg-background'>
+      <TabsContent value="beneficiaries" className="max-h-[90vh] w-full h-full">
+        <Card className="w-full h-full flex flex-col mt-2 bg-white rounded-xl shadow-md border border-gray-200 p-6">
+          <div className="flex-1 w-full overflow-x-auto overflow-y-auto max-h-[60vh]">
+            <Table className="w-full min-w-[700px]">
+              <TableHeader className='sticky top-0 bg-white rounded-t-xl'>
                 <TableRow>
                   <TableHead className='font-bold min-w-[100px]'>Dirección</TableHead>
                   <TableHead onClick={() => requestSort('isActive')} className='font-bold cursor-pointer min-w-[80px]'>
@@ -95,24 +95,24 @@ function Dashboard() {
                       (new Date(beneficiary.dateRemoved*1000)).toLocaleDateString()
                     : "-"}</TableCell>
                     <TableCell className='text-right whitespace-nowrap'>{new Intl.NumberFormat('es-CO', {
-                style: 'currency',
-                currency: 'COP',
-              }).format(Number(formatUnits(beneficiary.totalClaimed, 18)))}</TableCell>
+              style: 'currency',
+              currency: 'COP',
+            }).format(Number(formatUnits(beneficiary.totalClaimed, 18)))}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border-t text-sm">
-            <div className="p-4 border rounded-md shadow-sm">
-              <p className="text-muted-foreground">Beneficiarios activos</p>
-              <p className="font-bold text-lg">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-0 mt-6 w-full">
+            <div className="p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50">
+              <p className="text-gray-500">Beneficiarios activos</p>
+              <p className="font-bold text-lg text-gray-800">
                 {sortedBeneficiaries.filter(b => b.isActive).length}
               </p>
             </div>
-            <div className="p-4 border rounded-md shadow-sm">
-              <p className="text-muted-foreground">Promedio reclamado por beneficiario</p>
-              <p className="font-bold text-lg">
+            <div className="p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50">
+              <p className="text-gray-500">Promedio reclamado por beneficiario</p>
+              <p className="font-bold text-lg text-gray-800">
                 {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(
                   sortedBeneficiaries.length > 0
                     ? sortedBeneficiaries.reduce((acc, b) => acc + Number(formatUnits(b.totalClaimed, 18)), 0) / sortedBeneficiaries.length

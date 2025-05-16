@@ -140,27 +140,27 @@ function FundsCard() {
   };
 
   return (
-    <Tabs defaultValue='add' className='w-full md:w-[350px] h-full flex-1'>
-      <TabsList className='grid w-full grid-cols-2 p-2 gap-x-1 tabline'>
-        <TabsTrigger value='add' className='tab-button'>
+    <Tabs defaultValue='add' className='w-full h-full'>
+      <TabsList className='grid w-full grid-cols-2 p-1 gap-x-2 bg-gray-100 rounded-xl mb-4'>
+        <TabsTrigger value='add' className='tab-button data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=inactive]:bg-gray-200 data-[state=inactive]:text-gray-700 rounded-lg transition-colors'>
           Fondear
         </TabsTrigger>
-        <TabsTrigger value='delete' className='tab-button'>
+        <TabsTrigger value='delete' className='tab-button data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=inactive]:bg-gray-200 data-[state=inactive]:text-gray-700 rounded-lg transition-colors'>
           Retirar
         </TabsTrigger>
       </TabsList>
       <TabsContent value='add'>
-        <Card className='w-full md:w-[350px] my-2'>
+        <Card className='w-full max-w-[400px] mx-auto bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-6'>
           <form onSubmit={handleAddSubmit}>
             <CardHeader>
-              <CardTitle>Añadir fondos</CardTitle>
+              <CardTitle className='text-gray-800 text-lg font-semibold'>Añadir fondos</CardTitle>
             </CardHeader>
-            <CardContent className='text-left'>
-              <Label>Cantidad</Label>
-              <Input name='amount' placeholder='$cCop' />
+            <CardContent className='text-left p-0 mb-4'>
+              <Label className='text-gray-700 mb-2'>Cantidad</Label>
+              <Input name='amount' placeholder='$cCop' className='mt-1' />
             </CardContent>
-            <CardFooter>
-              <Button loading={isPending || isLoading} className='w-full'>
+            <CardFooter className='p-0'>
+              <Button loading={isPending || isLoading} className='w-full bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg'>
                 Añadir
               </Button>
             </CardFooter>
@@ -169,12 +169,12 @@ function FundsCard() {
       </TabsContent>
       <TabsContent value='delete'>
         <form onSubmit={handleWithdrawSubmit}>
-          <Card className='w-full md:w-[350px] my-2'>
+          <Card className='w-full max-w-[400px] mx-auto bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-6'>
             <CardHeader>
-              <CardTitle>Retirar fondos</CardTitle>
+              <CardTitle className='text-gray-800 text-lg font-semibold'>Retirar fondos</CardTitle>
             </CardHeader>
-            <CardFooter>
-              <Button className='w-full'>Retirar</Button>
+            <CardFooter className='p-0'>
+              <Button className='w-full bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg'>Retirar</Button>
             </CardFooter>
           </Card>
         </form>

@@ -1,5 +1,5 @@
 query DailyClaims {
-  dailyClaims(first: 30, orderBy: date, orderDirection: desc) {
+  dailyClaims(first: 60, orderBy: date, orderDirection: desc) {
     id
     date
     totalClaims
