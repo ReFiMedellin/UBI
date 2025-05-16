@@ -79,39 +79,39 @@ function BeneficiariesCard() {
   }, [isSuccess])
   
   return (
-    <Tabs defaultValue="add" className="w-full md:w-[350px] h-full flex-1">
-      <TabsList className="grid w-full grid-cols-2 p-2 gap-x-1 tabline">
-        <TabsTrigger value="add" className="tab-button">Añadir</TabsTrigger>
-        <TabsTrigger value="delete" className="tab-button">Eliminar</TabsTrigger>
+    <Tabs defaultValue="add" className="w-full h-full flex-1">
+      <TabsList className="grid w-full grid-cols-2 p-1 gap-x-2 bg-gray-100 rounded-xl mb-4">
+        <TabsTrigger value="add" className="tab-button data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=inactive]:bg-gray-200 data-[state=inactive]:text-gray-700 rounded-lg transition-colors">Añadir</TabsTrigger>
+        <TabsTrigger value="delete" className="tab-button data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=inactive]:bg-gray-200 data-[state=inactive]:text-gray-700 rounded-lg transition-colors">Eliminar</TabsTrigger>
       </TabsList>
       <TabsContent value="add">
-        <Card className="w-full md:w-[350px] my-2">
+        <Card className="w-full max-w-[400px] mx-auto bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-6">
         <form onSubmit={ handleAddSubmit } >
           <CardHeader>
-            <CardTitle>Añadir beneficiario</CardTitle>
+            <CardTitle className="text-gray-800 text-lg font-semibold">Añadir beneficiario</CardTitle>
           </CardHeader>
-          <CardContent className="text-left">
-            <Label>Address</Label>
-            <Input name="address" id="addressAdd" placeholder="0x123..."/>
+          <CardContent className="text-left p-0 mb-4">
+            <Label className="text-gray-700 mb-2">Address</Label>
+            <Input name="address" id="addressAdd" placeholder="0x123..." className="mt-1"/>
           </CardContent>
-          <CardFooter>
-            <Button type="submit" className="w-full" loading={isPending || isLoading}>Añadir</Button>
+          <CardFooter className="p-0">
+            <Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg" loading={isPending || isLoading}>Añadir</Button>
           </CardFooter>
         </form>
         </Card>
       </TabsContent>
       <TabsContent value="delete">
-        <Card className="w-full md:w-[350px] my-2">
+        <Card className="w-full max-w-[400px] mx-auto bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-6">
         <form onSubmit={ handleDeleteSubmit }>
           <CardHeader>
-            <CardTitle>Eliminar beneficiario</CardTitle>
+            <CardTitle className="text-gray-800 text-lg font-semibold">Eliminar beneficiario</CardTitle>
           </CardHeader>
-          <CardContent className="text-left">
-            <Label>Address</Label>
-            <Input name="address" id="addressDelete" placeholder="0x123..."/>
+          <CardContent className="text-left p-0 mb-4">
+            <Label className="text-gray-700 mb-2">Address</Label>
+            <Input name="address" id="addressDelete" placeholder="0x123..." className="mt-1"/>
           </CardContent>
-          <CardFooter>
-            <Button type="submit" loading={isPending || isLoading} className="w-full">Eliminar</Button>
+          <CardFooter className="p-0">
+            <Button type="submit" loading={isPending || isLoading} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg">Eliminar</Button>
           </CardFooter>
         </form>
         </Card>

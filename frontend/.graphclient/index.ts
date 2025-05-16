@@ -669,7 +669,7 @@ const merger = new(BareMerger as any)({
       })
 const documentHashMap = {
         "e4d2a0843663c4348f8c652badafc03db3f31261bc912de14d9369c9df595876": BeneficiariesDocument,
-"9906f4ef14d01263a96fc4d3b33baeccef5d243ea095e642cc72c29507eeed6a": DailyClaimsDocument,
+"5b4c2732d1226408767579ef18ae05c1c00c3aa739b1b0c970c0cfb70a72626e": DailyClaimsDocument,
 "5fdb2969dcb8c7152241c2b73c1ee4d8a48eb0dce7aa9993c46d1f9e6d491664": FundsDocument
       }
 additionalEnvelopPlugins.push(usePersistedOperations({
@@ -704,7 +704,7 @@ additionalEnvelopPlugins.push(usePersistedOperations({
           return printWithCache(DailyClaimsDocument);
         },
         location: 'DailyClaimsDocument.graphql',
-        sha256Hash: '9906f4ef14d01263a96fc4d3b33baeccef5d243ea095e642cc72c29507eeed6a'
+        sha256Hash: '5b4c2732d1226408767579ef18ae05c1c00c3aa739b1b0c970c0cfb70a72626e'
       },{
         document: FundsDocument,
         get rawSDL() {
@@ -795,7 +795,7 @@ export const BeneficiariesDocument = gql`
     ` as unknown as DocumentNode<BeneficiariesQuery, BeneficiariesQueryVariables>;
 export const DailyClaimsDocument = gql`
     query DailyClaims {
-  dailyClaims(first: 30, orderBy: date, orderDirection: desc) {
+  dailyClaims(first: 60, orderBy: date, orderDirection: desc) {
     id
     date
     totalClaims

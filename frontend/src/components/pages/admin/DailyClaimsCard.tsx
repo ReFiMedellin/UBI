@@ -1,8 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { getBuiltGraphSDK } from '@/../.graphclient';
 import { useQuery } from '@tanstack/react-query';
 import { formatUnits } from 'viem';
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import * as React from "react";
 
 const sdk = getBuiltGraphSDK();
 
@@ -26,90 +29,102 @@ function DailyClaimsCard() {
     amount: Number(formatUnits(claim.totalAmount, 18))
   })).reverse() || [];
 
-  const maxClaims = Math.max(...chartData.map(d => d.claims));
+  const [activeChart, setActiveChart] = React.useState<'claims' | 'amount'>('claims');
+
+  const chartConfig = {
+    claims: {
+      label: "Cantidad de Reclamos",
+      color: "#6366f1"
+    },
+    amount: {
+      label: "Monto Reclamado",
+      color: "#06b6d4"
+    }
+  };
 
   return (
-    <div className="w-full flex flex-col h-full gap-4 overflow-auto py-2">
-      <Card className="w-full h-full flex flex-col">
-        <CardHeader>
-          <CardTitle>Análisis</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col h-full p-4 md:p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-shrink-0">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Reclamos Diarios</h3>
-              <div className="h-[200px] md:h-[220px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-                    <XAxis 
-                      dataKey="date" 
-                      tickLine={false} 
-                      tickMargin={10}
-                      fontSize={12}
-                    />
-                    <YAxis
-                      tickLine={false}
-                      tickMargin={10}
-                      tickFormatter={(value: number) => `${value}`}
-                      domain={[0, Math.ceil(maxClaims * 1.1)]}
-                      fontSize={12}
-                    />
-                    <Tooltip 
-                      labelFormatter={(label) => {
-                        const dataPoint = chartData.find(d => d.date === label);
-                        return dataPoint?.fullDate || label;
-                      }}
-                      contentStyle={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                        fontSize: '12px'
-                      }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="claims"
-                      stroke="#2563eb"
-                      fill="#3b82f6"
-                      fillOpacity={0.2}
-                      name="Reclamos"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className="flex items-center justify-center min-h-[200px] md:min-h-[250px] border-2 border-dashed rounded-lg">
-              <p className="text-lg md:text-2xl font-semibold text-muted-foreground text-center">¡Se integrará pronto!</p>
-            </div>
+    <div className='flex flex-col items-center justify-center max-w-[90vw] overflow-auto'>
+      <Card className="w-full bg-white shadow-md rounded-xl border border-gray-200 p-0">
+        <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 border-b p-6">
+          <div>
+            <CardTitle className="text-lg md:text-xl font-bold text-gray-800">Reclamos Diarios</CardTitle>
+            <CardDescription className="text-sm text-gray-500">Visualiza la cantidad de reclamos o el monto reclamado por día de los últimos 60 días</CardDescription>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-            <Card className="p-4 border shadow-sm">
-              <p className="text-muted-foreground text-sm">Total aportado</p>
-              <p className="font-bold text-base md:text-lg mt-1">
+          <Tabs value={activeChart} onValueChange={v => setActiveChart(v as 'claims' | 'amount')}>
+            <TabsList className="bg-gray-100 rounded-xl p-1">
+              <TabsTrigger value="claims" className="tab-button data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=inactive]:bg-gray-200 data-[state=inactive]:text-gray-700 rounded-lg transition-colors px-4">Cantidad</TabsTrigger>
+              <TabsTrigger value="amount" className="tab-button data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=inactive]:bg-gray-200 data-[state=inactive]:text-gray-700 rounded-lg transition-colors px-4">Monto</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="overflow-x-auto">
+            <ChartContainer config={chartConfig} className="h-[260px] md:h-[320px] min-w-[600px] w-full">
+              <BarChart
+                data={chartData}
+                margin={{ left: 20, right: 20, top: 20, bottom: 20 }}
+                barSize={28}
+              >
+                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#e0e7ef" />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  minTickGap={18}
+                  fontSize={13}
+                  stroke="#6366f1"
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  fontSize={13}
+                  stroke="#6366f1"
+                  tickMargin={8}
+                  width={60}
+                />
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      className="w-[150px]"
+                      nameKey={activeChart}
+                      labelFormatter={(value) => chartData?.find(d => d.date === value)?.fullDate}
+                      formatter={(value: any) => activeChart === 'amount' ? `Monto reclamado: $${Number(value).toLocaleString('es-CO')}` : `Cantidad de reclamos: ${value}`}
+                    />
+                  }
+                />
+                <Bar dataKey={activeChart} fill={chartConfig[activeChart].color} radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ChartContainer>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 overflow-x-auto">
+            <Card className="p-4 border border-gray-200 shadow-sm bg-gray-50 rounded-lg min-w-[180px]">
+              <p className="text-gray-500 text-sm font-medium">Total aportado</p>
+              <p className="font-bold text-base md:text-lg mt-1 text-gray-800">
                 {new Intl.NumberFormat(
                   "es-CO", { style: "currency", currency: "COP" }
                 ).format(Number(formatUnits(funds ? funds.totalSupplied : 0, 18)))}
               </p>
             </Card>
-            <Card className="p-4 border shadow-sm">
-              <p className="text-muted-foreground text-sm">Total retirado</p>
-              <p className="font-bold text-base md:text-lg mt-1">
+            <Card className="p-4 border border-gray-200 shadow-sm bg-gray-50 rounded-lg min-w-[180px]">
+              <p className="text-gray-500 text-sm font-medium">Total retirado</p>
+              <p className="font-bold text-base md:text-lg mt-1 text-gray-800">
                 {new Intl.NumberFormat(
                   "es-CO", { style: "currency", currency: "COP" }
                 ).format(Number(formatUnits(funds ? funds.totalWithdrawn : 0, 18)))}
               </p>
             </Card>
-            <Card className="p-4 border shadow-sm">
-              <p className="text-muted-foreground text-sm">Total reclamado</p>
-              <p className="font-bold text-base md:text-lg mt-1">
+            <Card className="p-4 border border-gray-200 shadow-sm bg-gray-50 rounded-lg min-w-[180px]">
+              <p className="text-gray-500 text-sm font-medium">Total reclamado</p>
+              <p className="font-bold text-base md:text-lg mt-1 text-gray-800">
                 {new Intl.NumberFormat(
                   "es-CO", { style: "currency", currency: "COP" }
                 ).format(Number(formatUnits(funds ? funds.totalClaimed : 0, 18)))}
               </p>
             </Card>
-            <Card className="p-4 border shadow-sm">
-              <p className="text-muted-foreground text-sm">Balance actual</p>
-              <p className="font-bold text-base md:text-lg mt-1">
+            <Card className="p-4 border border-gray-200 shadow-sm bg-gray-50 rounded-lg min-w-[180px]">
+              <p className="text-gray-500 text-sm font-medium">Balance actual</p>
+              <p className="font-bold text-base md:text-lg mt-1 text-gray-800">
                 {new Intl.NumberFormat(
                   "es-CO", { style: "currency", currency: "COP" }
                 ).format(Number(formatUnits(funds ? funds.contractBalance : 0, 18)))}

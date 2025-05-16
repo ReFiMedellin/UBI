@@ -24,6 +24,7 @@
     "@wagmi/cli": "^2.1.18",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.11.4",
     "graphql": "^16.10.0",
     "lucide-react": "^0.464.0",
     "react": "^18.3.1",
