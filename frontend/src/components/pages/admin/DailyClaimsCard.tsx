@@ -74,6 +74,7 @@ function DailyClaimsCard() {
                   minTickGap={18}
                   fontSize={13}
                   stroke="#6366f1"
+                  label={{ value: 'Fecha', position: 'bottom', offset: 0, style: { textAnchor: 'middle', fontSize: 12, fill: '#000000' } }}
                 />
                 <YAxis
                   tickLine={false}
@@ -82,6 +83,13 @@ function DailyClaimsCard() {
                   stroke="#6366f1"
                   tickMargin={8}
                   width={60}
+                  label={{ 
+                    value: activeChart === 'claims' ? 'Cantidad de Reclamos' : 'Monto Reclamado (cCop)', 
+                    angle: -90, 
+                    position: 'left',
+                    style: { textAnchor: 'middle', fontSize: 12, fill: '#000000' }
+                  }}
+                  tickFormatter={value => activeChart === 'amount' ? `$${(value/1000).toLocaleString('es-CO', { maximumFractionDigits: 0 })} k` : value}
                 />
                 <ChartTooltip
                   content={

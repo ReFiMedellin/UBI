@@ -10,7 +10,7 @@ function AdminPanel() {
         <BeneficiariesCard />
         <FundsCard />
       </div>
-      <div className='flex justify-center col-span-12 md:col-span-8 h-[75vh] w-full'>
+      <div className='flex justify-center col-span-12 md:col-span-8 min-h-[75vh] w-full'>
         <Dashboard />
       </div>
     </div>

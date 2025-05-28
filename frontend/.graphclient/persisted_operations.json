@@ -1,5 +1,5 @@
 {
   "e4d2a0843663c4348f8c652badafc03db3f31261bc912de14d9369c9df595876": "query Beneficiaries {\n  beneficiaries {\n    id\n    totalClaimed\n    dateAdded\n    dateRemoved\n    isActive\n  }\n}",
-  "5b4c2732d1226408767579ef18ae05c1c00c3aa739b1b0c970c0cfb70a72626e": "query DailyClaims {\n  dailyClaims(first: 60, orderBy: date, orderDirection: desc) {\n    id\n    date\n    totalClaims\n    totalAmount\n  }\n}",
+  "95ecb258772a32d03b3c8da569565800324190a2cf35af4e3eaa8632ddb6ceff": "query DailyClaims {\n  dailyClaims(first: 60, orderBy: date, orderDirection: desc) {\n    id\n    date\n    totalClaims\n    totalAmount\n    beneficiaries\n  }\n}",
   "5fdb2969dcb8c7152241c2b73c1ee4d8a48eb0dce7aa9993c46d1f9e6d491664": "query Funds {\n  funds_collection(where: {id: \"0x947c6db1569edc9fd37b017b791ca0f008ab4946\"}) {\n    id\n    totalSupplied\n    totalWithdrawn\n    totalClaimed\n    contractBalance\n  }\n}"
 }

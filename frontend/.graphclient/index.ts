@@ -669,7 +669,7 @@ const merger = new(BareMerger as any)({
       })
 const documentHashMap = {
         "e4d2a0843663c4348f8c652badafc03db3f31261bc912de14d9369c9df595876": BeneficiariesDocument,
-"5b4c2732d1226408767579ef18ae05c1c00c3aa739b1b0c970c0cfb70a72626e": DailyClaimsDocument,
+"95ecb258772a32d03b3c8da569565800324190a2cf35af4e3eaa8632ddb6ceff": DailyClaimsDocument,
 "5fdb2969dcb8c7152241c2b73c1ee4d8a48eb0dce7aa9993c46d1f9e6d491664": FundsDocument
       }
 additionalEnvelopPlugins.push(usePersistedOperations({
@@ -704,7 +704,7 @@ additionalEnvelopPlugins.push(usePersistedOperations({
           return printWithCache(DailyClaimsDocument);
         },
         location: 'DailyClaimsDocument.graphql',
-        sha256Hash: '5b4c2732d1226408767579ef18ae05c1c00c3aa739b1b0c970c0cfb70a72626e'
+        sha256Hash: '95ecb258772a32d03b3c8da569565800324190a2cf35af4e3eaa8632ddb6ceff'
       },{
         document: FundsDocument,
         get rawSDL() {
@@ -774,7 +774,7 @@ export type BeneficiariesQuery = { beneficiaries: Array<Pick<Beneficiary, 'id' |
 export type DailyClaimsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DailyClaimsQuery = { dailyClaims: Array<Pick<DailyClaim, 'id' | 'date' | 'totalClaims' | 'totalAmount'>> };
+export type DailyClaimsQuery = { dailyClaims: Array<Pick<DailyClaim, 'id' | 'date' | 'totalClaims' | 'totalAmount' | 'beneficiaries'>> };
 
 export type FundsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -800,6 +800,7 @@ export const DailyClaimsDocument = gql`
     date
     totalClaims
     totalAmount
+    beneficiaries
   }
 }
     ` as unknown as DocumentNode<DailyClaimsQuery, DailyClaimsQueryVariables>;
