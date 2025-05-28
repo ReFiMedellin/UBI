@@ -4,5 +4,6 @@ query DailyClaims {
     date
     totalClaims
     totalAmount
+    beneficiaries
   }
 } 
