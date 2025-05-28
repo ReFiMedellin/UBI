@@ -7,6 +7,7 @@ import App from '@/App.tsx';
 import AdminPanel from '@/pages/Admin.tsx';
 import { Toaster } from './components/ui/toaster';
 import { Providers } from './providers';
+import DonatePage from './pages/Donate';
 
 
 createRoot(document.getElementById('root')!).render(
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
             <Routes>
               <Route index element={<App />} />
               <Route path='/admin' element={<AdminPanel />} />
+              <Route path='/donate' element={<DonatePage />} />
             </Routes>
           </div>
         </main>

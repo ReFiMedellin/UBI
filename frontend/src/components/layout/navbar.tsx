@@ -32,6 +32,16 @@ export function NavBar() {
                   <Button>Admin Panel</Button>
                 </Link>
               ))}
+              {!isAdmin && 
+                (location.pathname == '/' ? (
+                  <Link to='/donate'>
+                    <Button>Donar fondos</Button>
+                  </Link>
+                ) : (
+                  <Link to='/'>
+                    <Button>Reclamar</Button>
+                  </Link>
+                ))}
           </div>
           <appkit-button />
         </div>
