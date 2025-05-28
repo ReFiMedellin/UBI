@@ -134,7 +134,7 @@ function BeneficiariesPanel() {
                       .slice()
                       .sort((a, b) => Number(BigInt(b.totalClaimed) - BigInt(a.totalClaimed)))
                       .slice(0, 5)
-                      .map((b, i) => (
+                      .map((b, _) => (
                         <li key={b.id} className="flex justify-between items-center text-gray-800">
                           <span
                             className="font-mono text-sm cursor-pointer hover:underline"
