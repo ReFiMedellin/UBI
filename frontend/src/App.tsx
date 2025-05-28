@@ -12,6 +12,7 @@ import useUBIContract from './hooks/useUBIContract';
 import { useToast } from './hooks/use-toast';
 import { ToastAction } from '@radix-ui/react-toast';
 import { useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 
 function App() {
   const { toast } = useToast();
@@ -88,11 +89,11 @@ function App() {
           />
           <CardFooter>
             <Button
-              disabled={!isWhiteListed || !isAbleToClaim}
+              disabled={!isWhiteListed || !isAbleToClaim || isPending || isConfirming}
               className='w-full'
               onClick={handleClaim}
-              loading={isPending || isConfirming}
             >
+              {(isPending || isConfirming) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Reclamar
             </Button>
           </CardFooter>
