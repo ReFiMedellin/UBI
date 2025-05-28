@@ -15,6 +15,7 @@ import {
 } from '@/constants';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
+import { Loader2 } from 'lucide-react';
 import { erc20Abi, parseUnits } from 'viem';
 import {
   useAccount,
@@ -160,7 +161,8 @@ function FundsCard() {
               <Input name='amount' placeholder='$cCop' className='mt-1' />
             </CardContent>
             <CardFooter className='p-0'>
-              <Button loading={isPending || isLoading} className='w-full bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg'>
+              <Button disabled={isPending || isLoading} className='w-full bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg'>
+                {(isPending || isLoading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Añadir
               </Button>
             </CardFooter>

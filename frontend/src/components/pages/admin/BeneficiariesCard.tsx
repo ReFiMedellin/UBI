@@ -8,6 +8,7 @@ import { useWaitForTransactionReceipt, useWriteContract } from "wagmi"
 import { UBI_CONTRACT_ABI, UBI_CONTRACT_ADDRESS } from "@/constants"
 import { useToast } from "@/hooks/use-toast"
 import { useEffect } from "react"
+import { Loader2 } from "lucide-react"
 
 function BeneficiariesCard() {
   const { toast } = useToast()
@@ -95,7 +96,14 @@ function BeneficiariesCard() {
             <Input name="address" id="addressAdd" placeholder="0x123..." className="mt-1"/>
           </CardContent>
           <CardFooter className="p-0">
-            <Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg" loading={isPending || isLoading}>Añadir</Button>
+            <Button 
+              type="submit" 
+              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg"
+              disabled={isPending || isLoading}
+            >
+              {(isPending || isLoading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Añadir
+            </Button>
           </CardFooter>
         </form>
         </Card>
@@ -111,7 +119,14 @@ function BeneficiariesCard() {
             <Input name="address" id="addressDelete" placeholder="0x123..." className="mt-1"/>
           </CardContent>
           <CardFooter className="p-0">
-            <Button type="submit" loading={isPending || isLoading} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg">Eliminar</Button>
+            <Button 
+              type="submit" 
+              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg"
+              disabled={isPending || isLoading}
+            >
+              {(isPending || isLoading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Eliminar
+            </Button>
           </CardFooter>
         </form>
         </Card>
