@@ -98,6 +98,9 @@ function App() {
             </Button>
           </CardFooter>
         </Card>
+        <p className='text-sm text-gray-500 mt-4'>
+          Si quieres donar fondos, puedes hacerlo en la sección de donaciones.
+        </p>
       </div>
     </div>
   );
