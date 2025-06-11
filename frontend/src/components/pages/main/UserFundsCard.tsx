@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardFooter,
-  CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -26,7 +25,7 @@ import {
 
 function UserFundsCard() {
   const { toast } = useToast();
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const client = usePublicClient();
   const {
     writeContractAsync,
@@ -115,17 +114,15 @@ function UserFundsCard() {
   };
 
   return (
-    <Card className='w-full max-w-[400px] mx-auto bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-6 min-w-[350px]'>
+    <Card className='lg:w-[350px] mx-auto'>
       <form onSubmit={handleAddSubmit}>
-        <CardHeader>
-          <CardTitle className='text-gray-800 text-lg font-semibold'>Donar fondos</CardTitle>
-        </CardHeader>
-        <CardContent className='text-left p-0 mb-4'>
-          <Label className='text-gray-700 mb-2'>Cantidad</Label>
+      <CardTitle className='text-gray-800 text-lg font-semibold py-4'>Donar fondos</CardTitle>
+        <CardContent className='text-left p-0 m-4'>
+          <Label className='text-gray-700 m-2'>Cantidad</Label>
           <Input name='amount' placeholder='$cCop' className='mt-1' />
         </CardContent>
-        <CardFooter className='p-0'>
-          <Button disabled={isPending || isLoading} className='w-full bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg'>
+        <CardFooter className='px-4'>
+          <Button disabled={isPending || isLoading || !isConnected} className='w-full text-white rounded-lg'>
             {(isPending || isLoading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Donar
           </Button>

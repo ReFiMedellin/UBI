@@ -17,7 +17,7 @@ export function NavBar() {
   const location = useLocation();
 
   return (
-    <div className='p-0 m-0 h-[15vh]'>
+    <div className='p-0 m-0 h-16'>
       <nav className='border-b p-4 w-full'>
         <div className='container mx-auto flex items-center justify-between'>
           <div className='flex items-center space-x-8'>
@@ -32,16 +32,6 @@ export function NavBar() {
                   <Button>Admin Panel</Button>
                 </Link>
               ))}
-              {!isAdmin && 
-                (location.pathname == '/' ? (
-                  <Link to='/donate'>
-                    <Button>Donar fondos</Button>
-                  </Link>
-                ) : (
-                  <Link to='/'>
-                    <Button>Reclamar</Button>
-                  </Link>
-                ))}
           </div>
           <appkit-button />
         </div>

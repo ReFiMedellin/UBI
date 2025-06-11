@@ -13,6 +13,7 @@ import { useToast } from './hooks/use-toast';
 import { ToastAction } from '@radix-ui/react-toast';
 import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
+import UserFundsCard from './components/pages/main/UserFundsCard';
 
 function App() {
   const { toast } = useToast();
@@ -64,8 +65,8 @@ function App() {
   }, [isConfirmed])
 
   return (
-    <div className='flex flex-col items-center justify-center overflow-auto'>
-      <div>
+    <div className='flex flex-1 flex-col items-center justify-center overflow-auto h-full'>
+      <div className='m-4'>
         <div className='m-4 lg:w-[350px]'>
           <Header
             isWhiteListed={isWhiteListed}
@@ -98,9 +99,10 @@ function App() {
             </Button>
           </CardFooter>
         </Card>
-        <p className='text-sm text-gray-500 mt-4'>
-          Si quieres donar fondos, puedes hacerlo en la sección de donaciones.
-        </p>
+      </div>
+      <div className='m-4'>
+        <UserFundsCard />
+        <p className='text-sm text-gray-600 mt-4'>Recuerda que esta donación es voluntaria y no se puede retirar.</p>
       </div>
     </div>
   );
