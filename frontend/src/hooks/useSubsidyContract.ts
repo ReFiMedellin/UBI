@@ -1,30 +1,30 @@
-import { UBI_CONTRACT_ABI, UBI_CONTRACT_ADDRESS } from '@/constants'
+import { SUBSIDY_CONTRACT_ABI, SUBSIDY_CONTRACT_ADDRESS } from '@/constants'
 import { useReadContracts } from 'wagmi'
 
-function useUBIContract(address?: string) {
+function useSubsidyContract(address?: string) {
 
     const { data } = useReadContracts({
         contracts: [
             {
-                address: UBI_CONTRACT_ADDRESS,
-                abi: UBI_CONTRACT_ABI,
+                address: SUBSIDY_CONTRACT_ADDRESS,
+                abi: SUBSIDY_CONTRACT_ABI,
                 functionName: "isBeneficiary",
                 args: [address as `0x${string}`],
             },
             {
-                address: UBI_CONTRACT_ADDRESS,
-                abi: UBI_CONTRACT_ABI,
+                address: SUBSIDY_CONTRACT_ADDRESS,
+                abi: SUBSIDY_CONTRACT_ABI,
                 functionName: "addressToUser",
                 args: [address as `0x${string}`],
             },
             {
-                address: UBI_CONTRACT_ADDRESS,
-                abi: UBI_CONTRACT_ABI,
+                address: SUBSIDY_CONTRACT_ADDRESS,
+                abi: SUBSIDY_CONTRACT_ABI,
                 functionName: "subsidyClaimInterval",
             },
             {
-                address: UBI_CONTRACT_ADDRESS,
-                abi: UBI_CONTRACT_ABI,
+                address: SUBSIDY_CONTRACT_ADDRESS,
+                abi: SUBSIDY_CONTRACT_ABI,
                 functionName: "subsidyClaimableAmount",
             },
         ],
@@ -41,4 +41,4 @@ function useUBIContract(address?: string) {
 
 }
 
-export default useUBIContract
+export default useSubsidyContract

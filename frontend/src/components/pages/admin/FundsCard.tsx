@@ -10,8 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   CCOP_CONTRACT_ADDRESS,
-  UBI_CONTRACT_ABI,
-  UBI_CONTRACT_ADDRESS,
+  SUBSIDY_CONTRACT_ABI,
+  SUBSIDY_CONTRACT_ADDRESS,
 } from '@/constants';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
@@ -50,7 +50,7 @@ function FundsCard() {
     abi: erc20Abi,
     address: CCOP_CONTRACT_ADDRESS,
     functionName: 'allowance',
-    args: [address!, UBI_CONTRACT_ADDRESS],
+    args: [address!, SUBSIDY_CONTRACT_ADDRESS],
   });
 
   const { isLoading } = useWaitForTransactionReceipt({ hash });
@@ -69,7 +69,7 @@ function FundsCard() {
           abi: erc20Abi,
           address: CCOP_CONTRACT_ADDRESS,
           functionName: 'approve',
-          args: [UBI_CONTRACT_ADDRESS, amount],
+          args: [SUBSIDY_CONTRACT_ADDRESS, amount],
         });
 
         toast({
@@ -95,8 +95,8 @@ function FundsCard() {
         }
       }
       await writeContractAsync({
-        abi: UBI_CONTRACT_ABI,
-        address: UBI_CONTRACT_ADDRESS,
+        abi: SUBSIDY_CONTRACT_ABI,
+        address: SUBSIDY_CONTRACT_ADDRESS,
         functionName: 'addFunds',
         args: [amount],
       });
@@ -121,8 +121,8 @@ function FundsCard() {
     evt.preventDefault();
     try {
       await writeContractAsync({
-        abi: UBI_CONTRACT_ABI,
-        address: UBI_CONTRACT_ADDRESS,
+        abi: SUBSIDY_CONTRACT_ABI,
+        address: SUBSIDY_CONTRACT_ADDRESS,
         functionName: 'withdrawFunds',
       });
 

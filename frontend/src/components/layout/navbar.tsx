@@ -2,13 +2,13 @@ import { useAppKitAccount } from '@reown/appkit/react';
 import { useReadContract } from 'wagmi';
 import { Button } from '../ui/button';
 import { Link, useLocation } from 'react-router';
-import { UBI_CONTRACT_ADDRESS, UBI_CONTRACT_ABI } from '@/constants';
+import { SUBSIDY_CONTRACT_ADDRESS, SUBSIDY_CONTRACT_ABI } from '@/constants';
 
 export function NavBar() {
   const { isConnected, address } = useAppKitAccount();
   const { data } = useReadContract({
-    address: UBI_CONTRACT_ADDRESS,
-    abi: UBI_CONTRACT_ABI,
+            address: SUBSIDY_CONTRACT_ADDRESS,
+        abi: SUBSIDY_CONTRACT_ABI,
     functionName: 'owner',
   });
 

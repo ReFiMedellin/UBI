@@ -5,22 +5,35 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 import { isAddress } from "viem"
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi"
-import { UBI_CONTRACT_ABI, UBI_CONTRACT_ADDRESS } from "@/constants"
+import { SUBSIDY_CONTRACT_ABI, SUBSIDY_CONTRACT_ADDRESS } from "@/constants"
 import { useToast } from "@/hooks/use-toast"
 import { useEffect } from "react"
 import { Loader2 } from "lucide-react"
 
 function BeneficiariesCard() {
   const { toast } = useToast()
+  
+  // Función para generar enlace de Celoscan
+  const getCeloscanUrl = (hash: string) => {
+    return `https://celoscan.io/tx/${hash}`;
+  };
 
   const { writeContract, isPending, data: hash } = useWriteContract({
     mutation: {
       onError: (error) => {
         console.error(error);
         toast({
-          title: 'Error en la transacción',
-          description: error.message,
+          title: '❌ Error en la transacción',
+          description: (
+            <div className="space-y-2">
+              <p className="text-sm">{error.message}</p>
+              <p className="text-xs text-gray-500">
+                Verifica que tengas permisos de administrador y suficiente gas.
+              </p>
+            </div>
+          ),
           variant: 'destructive',
+          duration: 10000,
         });
       },
     },
@@ -43,8 +56,8 @@ function BeneficiariesCard() {
     }
 
     writeContract({
-      abi: UBI_CONTRACT_ABI,
-      address: UBI_CONTRACT_ADDRESS,
+      abi: SUBSIDY_CONTRACT_ABI,
+      address: SUBSIDY_CONTRACT_ADDRESS,
       functionName: "addBeneficiary",
       args: [address],
     })
@@ -65,19 +78,38 @@ function BeneficiariesCard() {
     }
 
     writeContract({
-      abi: UBI_CONTRACT_ABI,
-      address: UBI_CONTRACT_ADDRESS,
+      abi: SUBSIDY_CONTRACT_ABI,
+      address: SUBSIDY_CONTRACT_ADDRESS,
       functionName: "removeBeneficiary",
       args: [address],
     })
   }
 
   useEffect(() => {
-    if (isSuccess)
+    if (isSuccess && hash) {
+      const celoscanUrl = getCeloscanUrl(hash);
       toast({
-        title: "¡Transacción exitosa!",
+        title: "✅ ¡Operación completada exitosamente!",
+        description: (
+          <div className="space-y-2">
+            <p>La operación ha sido procesada correctamente.</p>
+            <div className="flex items-center space-x-2">
+              <span className="text-xs text-gray-500">Hash:</span>
+              <a 
+                href={celoscanUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-blue-600 hover:text-blue-800 hover:bg-gray-200 transition-colors"
+              >
+                {hash.slice(0, 10)}...{hash.slice(-8)}
+              </a>
+            </div>
+          </div>
+        ),
+        duration: 8000,
       })
-  }, [isSuccess])
+    }
+  }, [isSuccess, hash])
   
   return (
     <Tabs defaultValue="add" className="w-full h-full flex-1">

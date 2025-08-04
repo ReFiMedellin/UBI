@@ -7,28 +7,42 @@ import { Button } from '@/components/ui/button';
 import Description from './components/pages/main/Description';
 import Info from './components/pages/main/Info';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { UBI_CONTRACT_ADDRESS, UBI_CONTRACT_ABI } from './constants';
-import useUBIContract from './hooks/useUBIContract';
+import { SUBSIDY_CONTRACT_ADDRESS, SUBSIDY_CONTRACT_ABI } from './constants';
+import useSubsidyContract from './hooks/useSubsidyContract';
 import { useToast } from './hooks/use-toast';
 import { ToastAction } from '@radix-ui/react-toast';
 import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import UserFundsCard from './components/pages/main/UserFundsCard';
+import TestMenu from './components/TestMenu';
 
 function App() {
   const { toast } = useToast();
   const { address } = useAppKitAccount();
+  
+  // Función para generar enlace de Celoscan
+  const getCeloscanUrl = (hash: string) => {
+    return `https://celoscan.io/tx/${hash}`;
+  };
   const { data: hash, writeContract, isPending } = useWriteContract({
     mutation: {
       onError: (error) => {
         console.error(error);
         toast({
-          title: 'Error al reclamar el subsidio',
-          description: error.message,
+          title: '❌ Error al reclamar el subsidio',
+          description: (
+            <div className="space-y-2">
+              <p className="text-sm">{error.message}</p>
+              <p className="text-xs text-gray-500">
+                Verifica que tengas suficiente gas y que tu wallet esté conectada.
+              </p>
+            </div>
+          ),
           variant: 'destructive',
+          duration: 10000, // 10 segundos para errores
           action: (
-            <ToastAction onClick={handleClaim} altText='Try again'>
-              Try again
+            <ToastAction onClick={handleClaim} altText='Intentar de nuevo'>
+              Intentar de nuevo
             </ToastAction>
           ),
         });
@@ -38,8 +52,8 @@ function App() {
 
   const handleClaim = () => {
     writeContract({
-      abi: UBI_CONTRACT_ABI,
-      address: UBI_CONTRACT_ADDRESS,
+      abi: SUBSIDY_CONTRACT_ABI,
+      address: SUBSIDY_CONTRACT_ADDRESS,
       functionName: 'claimSubsidy',
     });
   };
@@ -51,18 +65,62 @@ function App() {
     isWhiteListed,
     totalClaimed,
     valueToClaim,
-  } = useUBIContract(address);
+  } = useSubsidyContract(address);
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash })
-
+  
+  // Mostrar mensaje cuando la transacción está pendiente
   useEffect(() => {
-    if (isConfirmed) {
+    if (hash && isConfirming) {
+      const celoscanUrl = getCeloscanUrl(hash);
       toast({
-        title: "Transacción exitosa.",
-        description: "El subsidio fue reclamado correctamente.",
+        title: "⏳ Transacción enviada",
+        description: (
+          <div className="space-y-2">
+            <p>Tu transacción está siendo procesada en la blockchain.</p>
+            <div className="flex items-center space-x-2">
+              <span className="text-xs text-gray-500">Hash:</span>
+              <a 
+                href={celoscanUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-blue-600 hover:text-blue-800 hover:bg-gray-200 transition-colors"
+              >
+                {hash.slice(0, 10)}...{hash.slice(-8)}
+              </a>
+            </div>
+          </div>
+        ),
+        duration: 5000,
       })
     }
-  }, [isConfirmed])
+  }, [hash, isConfirming])
+
+  useEffect(() => {
+    if (isConfirmed && hash) {
+      const celoscanUrl = getCeloscanUrl(hash);
+      toast({
+        title: "¡Subsidio reclamado exitosamente! 🎉",
+        description: (
+          <div className="space-y-2">
+            <p>Tu subsidio ha sido reclamado correctamente.</p>
+            <div className="flex items-center space-x-2">
+              <span className="text-xs text-gray-500">Hash:</span>
+              <a 
+                href={celoscanUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-blue-600 hover:text-blue-800 hover:bg-gray-200 transition-colors"
+              >
+                {hash.slice(0, 10)}...{hash.slice(-8)}
+              </a>
+            </div>
+          </div>
+        ),
+        duration: 8000, // 8 segundos para dar tiempo a leer
+      })
+    }
+  }, [isConfirmed, hash])
 
   return (
     <div className='flex flex-1 flex-col items-center justify-center overflow-auto h-full'>
@@ -80,7 +138,6 @@ function App() {
           <Description
             isWhiteListed={isWhiteListed}
             isAbleToClaim={isAbleToClaim}
-            valueToClaim={valueToClaim}
             claimInterval={claimInterval}
           />
           <Info
@@ -104,6 +161,7 @@ function App() {
         <UserFundsCard />
         <p className='text-sm text-gray-600 mt-4'>Recuerda que esta donación es voluntaria y no se puede retirar.</p>
       </div>
+      <TestMenu />
     </div>
   );
 }

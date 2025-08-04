@@ -1,10 +1,10 @@
 import type { Address } from "viem"
 
-export const UBI_CONTRACT_ADDRESS = "0x947C6dB1569edc9fd37B017B791cA0F008AB4946"
+export const SUBSIDY_CONTRACT_ADDRESS = "0x947C6dB1569edc9fd37B017B791cA0F008AB4946"
 export const CCOP_CONTRACT_ADDRESS ="0x8A567e2aE79CA692Bd748aB832081C45de4041eA" as Address
 
 
-export const UBI_CONTRACT_ABI = [
+export const SUBSIDY_CONTRACT_ABI = [
   {
     type: 'constructor',
     inputs: [

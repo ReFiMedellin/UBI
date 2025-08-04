@@ -9,8 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   CCOP_CONTRACT_ADDRESS,
-  UBI_CONTRACT_ABI,
-  UBI_CONTRACT_ADDRESS,
+  SUBSIDY_CONTRACT_ABI,
+  SUBSIDY_CONTRACT_ADDRESS,
 } from '@/constants';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
@@ -27,6 +27,11 @@ function UserFundsCard() {
   const { toast } = useToast();
   const { address, isConnected } = useAccount();
   const client = usePublicClient();
+  
+  // Función para generar enlace de Celoscan
+  const getCeloscanUrl = (hash: string) => {
+    return `https://celoscan.io/tx/${hash}`;
+  };
   const {
     writeContractAsync,
     isPending,
@@ -48,7 +53,7 @@ function UserFundsCard() {
     abi: erc20Abi,
     address: CCOP_CONTRACT_ADDRESS,
     functionName: 'allowance',
-    args: [address!, UBI_CONTRACT_ADDRESS],
+    args: [address!, SUBSIDY_CONTRACT_ADDRESS],
   });
 
   const { isLoading } = useWaitForTransactionReceipt({ hash });
@@ -67,12 +72,28 @@ function UserFundsCard() {
           abi: erc20Abi,
           address: CCOP_CONTRACT_ADDRESS,
           functionName: 'approve',
-          args: [UBI_CONTRACT_ADDRESS, amount],
+          args: [SUBSIDY_CONTRACT_ADDRESS, amount],
         });
 
         toast({
-          title: 'Transacción enviada',
-          description: 'Aprobación enviada, esperando confirmación.',
+          title: '⏳ Aprobación enviada',
+          description: (
+            <div className="space-y-2">
+              <p>Esperando confirmación de la aprobación...</p>
+                          <div className="flex items-center space-x-2">
+              <span className="text-xs text-gray-500">Hash:</span>
+              <a 
+                href={getCeloscanUrl(approveTx)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-blue-600 hover:text-blue-800 hover:bg-gray-200 transition-colors"
+              >
+                {approveTx.slice(0, 10)}...{approveTx.slice(-8)}
+              </a>
+            </div>
+            </div>
+          ),
+          duration: 5000,
         });
 
         await refetchAllowance();
@@ -85,30 +106,62 @@ function UserFundsCard() {
         });
         if (receipt.status === 'reverted') {
           toast({
-            title: 'Error en la transacción',
-            description: 'La transacción de aprobación falló.',
+            title: '❌ Error en la aprobación',
+            description: (
+              <div className="space-y-2">
+                <p>La transacción de aprobación falló.</p>
+                <p className="text-xs text-gray-500">
+                  Verifica que tengas suficiente gas y que tu wallet esté conectada.
+                </p>
+              </div>
+            ),
             variant: 'destructive',
+            duration: 10000,
           });
           return;
         }
       }
-      await writeContractAsync({
-        abi: UBI_CONTRACT_ABI,
-        address: UBI_CONTRACT_ADDRESS,
+      const addFundsTx = await writeContractAsync({
+        abi: SUBSIDY_CONTRACT_ABI,
+        address: SUBSIDY_CONTRACT_ADDRESS,
         functionName: 'addFunds',
         args: [amount],
       });
 
       toast({
-        title: 'Transacción enviada',
-        description: 'Fondos añadidos correctamente.',
+        title: '🎉 ¡Fondos donados exitosamente!',
+        description: (
+          <div className="space-y-2">
+            <p>Tu donación ha sido procesada correctamente.</p>
+            <div className="flex items-center space-x-2">
+              <span className="text-xs text-gray-500">Hash:</span>
+              <a 
+                href={getCeloscanUrl(addFundsTx)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-blue-600 hover:text-blue-800 hover:bg-gray-200 transition-colors"
+              >
+                {addFundsTx.slice(0, 10)}...{addFundsTx.slice(-8)}
+              </a>
+            </div>
+          </div>
+        ),
+        duration: 8000,
       });
     } catch (error: any) {
       console.error(error);
       toast({
-        title: 'Error en la transacción',
-        description: error.message,
+        title: '❌ Error al donar fondos',
+        description: (
+          <div className="space-y-2">
+            <p className="text-sm">{error.message}</p>
+            <p className="text-xs text-gray-500">
+              Verifica que tengas suficiente gas y tokens para donar.
+            </p>
+          </div>
+        ),
         variant: 'destructive',
+        duration: 10000,
       });
     }
   };

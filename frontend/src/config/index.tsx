@@ -9,9 +9,9 @@ if (!projectId) {
 }
 
 export const metadata = {
-  name: 'ReFi Medellin UBI',
-  description: 'ReFi Medellin UBI module',
-  url: 'https://ubi.refimedellin.org',
+  name: 'Subsidios ReFi Medellin',
+  description: 'Subsidios ReFi Medellin module',
+  url: 'https://subsidio.refimedellin.org',
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
