@@ -29,7 +29,16 @@ function Header({
       const daysLeft = secondsToDays(
         Number(claimInterval) - secondsSinceLastClaimed
       );
-      return `Ya reclamaste tu subsidio. Regresa en ${daysLeft} días para reclamar de nuevo`;
+      return (
+        <div className="text-center">
+          <div className="text-lg font-semibold text-gray-900">
+            Ya reclamaste el subsidio de esta semana.
+          </div>
+          <div className="text-sm text-gray-600 mt-1">
+            Regresa en {daysLeft} días para reclamar de nuevo.
+          </div>
+        </div>
+      );
     }
   };
 

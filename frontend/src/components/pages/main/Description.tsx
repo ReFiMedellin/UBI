@@ -25,7 +25,16 @@ function Description({
     else if (isAbleToClaim)
       return `Puedes reclamar tu subsidio cada ${claimIntervalInDays} días.`;
     else
-      return `Ya has reclamado tu subsidio. Regresa en ${claimIntervalInDays} días para reclamar de nuevo.`;
+      return (
+        <div className="text-center">
+          <div className="text-lg font-semibold text-gray-900">
+            Ya reclamaste el subsidio de esta semana.
+          </div>
+          <div className="text-sm text-gray-600 mt-1">
+            Regresa en {claimIntervalInDays} días para reclamar de nuevo.
+          </div>
+        </div>
+      );
   };
 
   const claimIntervalInDays = secondsToDays(Number(claimInterval));
