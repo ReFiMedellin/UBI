@@ -14,7 +14,6 @@ import { ToastAction } from '@radix-ui/react-toast';
 import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import UserFundsCard from './components/pages/main/UserFundsCard';
-import TestMenu from './components/TestMenu';
 
 function App() {
   const { toast } = useToast();
@@ -161,7 +160,6 @@ function App() {
         <UserFundsCard />
         <p className='text-sm text-gray-600 mt-4'>Recuerda que esta donación es voluntaria y no se puede retirar.</p>
       </div>
-      <TestMenu />
     </div>
   );
 }
