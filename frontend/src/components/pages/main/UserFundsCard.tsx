@@ -11,10 +11,12 @@ import {
   CCOP_CONTRACT_ADDRESS,
   SUBSIDY_CONTRACT_ABI,
   SUBSIDY_CONTRACT_ADDRESS,
+  DIVVI_CONSUMER_ADDRESS,
 } from '@/constants';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { erc20Abi, parseUnits } from 'viem';
+import { getReferralTag, submitReferral } from '@divvi/referral-sdk';
 import {
   useAccount,
   usePublicClient,
@@ -65,7 +67,6 @@ function UserFundsCard() {
 
       const formData = new FormData(evt.currentTarget);
       const amount = parseUnits(formData.get('amount') as string, 18);
-      console.debug('GM', allowance);
       if (typeof allowance !== 'bigint') return;
       if (allowance < amount) {
         const approveTx = await writeContractAsync({
@@ -121,11 +122,17 @@ function UserFundsCard() {
           return;
         }
       }
+      const referralTag = getReferralTag({
+        user: (address as `0x${string}`) ?? '0x0000000000000000000000000000000000000000',
+        consumer: DIVVI_CONSUMER_ADDRESS,
+      });
+
       const addFundsTx = await writeContractAsync({
         abi: SUBSIDY_CONTRACT_ABI,
         address: SUBSIDY_CONTRACT_ADDRESS,
         functionName: 'addFunds',
         args: [amount],
+        dataSuffix: `0x${referralTag}`,
       });
 
       toast({
@@ -148,6 +155,11 @@ function UserFundsCard() {
         ),
         duration: 8000,
       });
+
+      // Report to Divvi
+      submitReferral({ txHash: addFundsTx, chainId: 42220 }).catch((e) =>
+        console.warn('Divvi submitReferral failed', e)
+      );
     } catch (error: any) {
       console.error(error);
       toast({

@@ -4,14 +4,16 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 import { isAddress } from "viem"
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi"
-import { SUBSIDY_CONTRACT_ABI, SUBSIDY_CONTRACT_ADDRESS } from "@/constants"
+import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi"
+import { getReferralTag, submitReferral } from '@divvi/referral-sdk'
+import { SUBSIDY_CONTRACT_ABI, SUBSIDY_CONTRACT_ADDRESS, DIVVI_CONSUMER_ADDRESS } from "@/constants"
 import { useToast } from "@/hooks/use-toast"
 import { useEffect } from "react"
 import { Loader2 } from "lucide-react"
 
 function BeneficiariesCard() {
   const { toast } = useToast()
+  const { address: userAddress } = useAccount()
   
   // Función para generar enlace de Celoscan
   const getCeloscanUrl = (hash: string) => {
@@ -55,11 +57,17 @@ function BeneficiariesCard() {
       return
     }
 
+    const referralTag = getReferralTag({
+      user: (userAddress as `0x${string}`) ?? '0x0000000000000000000000000000000000000000',
+      consumer: DIVVI_CONSUMER_ADDRESS,
+    })
+
     writeContract({
       abi: SUBSIDY_CONTRACT_ABI,
       address: SUBSIDY_CONTRACT_ADDRESS,
       functionName: "addBeneficiary",
       args: [address],
+      dataSuffix: `0x${referralTag}`,
     })
   }
 
@@ -77,11 +85,17 @@ function BeneficiariesCard() {
       return
     }
 
+    const referralTag = getReferralTag({
+      user: (userAddress as `0x${string}`) ?? '0x0000000000000000000000000000000000000000',
+      consumer: DIVVI_CONSUMER_ADDRESS,
+    })
+
     writeContract({
       abi: SUBSIDY_CONTRACT_ABI,
       address: SUBSIDY_CONTRACT_ADDRESS,
       functionName: "removeBeneficiary",
       args: [address],
+      dataSuffix: `0x${referralTag}`,
     })
   }
 
@@ -108,6 +122,11 @@ function BeneficiariesCard() {
         ),
         duration: 8000,
       })
+
+      // Report to Divvi
+      submitReferral({ txHash: hash, chainId: 42220 }).catch((e) =>
+        console.warn('Divvi submitReferral failed', e)
+      )
     }
   }, [isSuccess, hash])
   
