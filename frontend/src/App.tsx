@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import Description from './components/pages/main/Description';
 import Info from './components/pages/main/Info';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { SUBSIDY_CONTRACT_ADDRESS, SUBSIDY_CONTRACT_ABI } from './constants';
+import { getReferralTag, submitReferral } from '@divvi/referral-sdk';
+import { SUBSIDY_CONTRACT_ADDRESS, SUBSIDY_CONTRACT_ABI, DIVVI_CONSUMER_ADDRESS } from './constants';
 import useSubsidyContract from './hooks/useSubsidyContract';
 import { useToast } from './hooks/use-toast';
 import { ToastAction } from '@radix-ui/react-toast';
@@ -50,10 +51,18 @@ function App() {
   });
 
   const handleClaim = () => {
+    // Build Divvi referral tag using connected user and provided consumer address
+    const referralTag = getReferralTag({
+      user: (address as `0x${string}`) ?? '0x0000000000000000000000000000000000000000',
+      consumer: DIVVI_CONSUMER_ADDRESS,
+    });
+
+    // Append the referral tag using dataSuffix so it doesn't change function args
     writeContract({
       abi: SUBSIDY_CONTRACT_ABI,
       address: SUBSIDY_CONTRACT_ADDRESS,
       functionName: 'claimSubsidy',
+      dataSuffix: `0x${referralTag}`,
     });
   };
 
@@ -118,6 +127,11 @@ function App() {
         ),
         duration: 8000, // 8 segundos para dar tiempo a leer
       })
+
+      // Report transaction to Divvi for attribution
+      submitReferral({ txHash: hash, chainId: 42220 }).catch((e) => {
+        console.warn('Divvi submitReferral failed', e)
+      })
     }
   }, [isConfirmed, hash])
 
@@ -137,6 +151,7 @@ function App() {
           <Description
             isWhiteListed={isWhiteListed}
             isAbleToClaim={isAbleToClaim}
+            lastClaimed={lastClaimed}
             claimInterval={claimInterval}
           />
           <Info
