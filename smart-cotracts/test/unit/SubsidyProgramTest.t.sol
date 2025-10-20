@@ -49,19 +49,19 @@ contract SubsidyProgramTest is Test {
 
     function testAddToken() public {
         // Get initial tokens (should only have token1 from constructor)
-        IERC20[] memory initialTokens = subsidyProgram.getWhitelistedTokens();
+        address[] memory initialTokens = subsidyProgram.getWhitelistedTokens();
         assertEq(initialTokens.length, 1);
-        assertEq(address(initialTokens[0]), address(token1));
+        assertEq(initialTokens[0], address(token1));
         
         // Add token2
         vm.prank(msg.sender);
         subsidyProgram.addToken(address(token2));
         
         // Verify token2 was added
-        IERC20[] memory updatedTokens = subsidyProgram.getWhitelistedTokens();
+        address[] memory updatedTokens = subsidyProgram.getWhitelistedTokens();
         assertEq(updatedTokens.length, 2);
-        assertEq(address(updatedTokens[0]), address(token1));
-        assertEq(address(updatedTokens[1]), address(token2));
+        assertEq(updatedTokens[0], address(token1));
+        assertEq(updatedTokens[1], address(token2));
 
         vm.expectRevert();
         subsidyProgram.addToken(address(token2));
@@ -88,13 +88,13 @@ contract SubsidyProgramTest is Test {
         subsidyProgram.removeToken(address(token1));
         vm.stopPrank();
 
-        IERC20[] memory tokens = subsidyProgram.getWhitelistedTokens();
+        address[] memory tokens = subsidyProgram.getWhitelistedTokens();
         assertEq(tokens.length, 1);
     }
 
     function testTokenPriority() public {
-        IERC20[] memory tokens = subsidyProgram.getWhitelistedTokens();
-        assertEq(address(tokens[0]), address(token1));
+        address[] memory tokens = subsidyProgram.getWhitelistedTokens();
+        assertEq(tokens[0], address(token1));
 
         vm.startPrank(msg.sender);
         subsidyProgram.addToken(address(token2));

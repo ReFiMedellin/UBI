@@ -15,10 +15,11 @@ contract SubsidyProgram is Ownable {
     uint256 public subsidyClaimInterval = 7 days;
     uint256 public subsidyClaimableAmount;
 
-    IERC20[] public tokens;
+    address[] private tokens;
+    mapping(address => uint256) private tokenIndex;
 
     event FundsAdded(uint256 amount, address tokenAddress, uint256 tokenBalance);
-    event FundsWithdrawed(address tokenAddress, uint256 amountWithdrawed);
+    event FundsWithdrawn(address tokenAddress, uint256 amountWithdrawed);
     event BeneficiaryAdded(address indexed beneficiaryAddress);
     event BeneficiaryRemoved(address indexed beneficiaryAddress);
     event SubsidyClaimed(
@@ -28,16 +29,17 @@ contract SubsidyProgram is Ownable {
     );
     event ClaimIntervalSet(uint256 interval);
     event ClaimableAmountSet(uint256 amount);
-    event TokenAdded(address indexed tokenAddress);
+    event TokenAdded(address indexed tokenAddress, uint256 newIndex);
     event TokenRemoved(address indexed tokenAddress);
     event TokenPriorityChanged(
         address indexed tokenAddress,
-        uint256 previousPriority,
-        uint256 newPriority
+        uint256 oldIndex,
+        uint256 newIndex
     );
 
     constructor(address _tokenAddress) Ownable(msg.sender) {
-        tokens.push(IERC20(_tokenAddress));
+        tokens.push(_tokenAddress);
+        tokenIndex[_tokenAddress] = 1;
     }
 
     function setClaimInterval(uint256 _interval) external onlyOwner {
@@ -51,64 +53,80 @@ contract SubsidyProgram is Ownable {
     }
 
     function addToken(address _tokenAddress) external onlyOwner {
-        (bool alreadyAccepted,) = isAcceptedToken(_tokenAddress);
-        require(!alreadyAccepted, "The token is already whitelisted.");
-        tokens.push(IERC20(_tokenAddress));
-        emit TokenAdded(_tokenAddress);
+        require(_tokenAddress != address(0), "Zero token");
+        require(tokenIndex[_tokenAddress] == 0, "The token is already whitelisted.");
+        tokens.push(_tokenAddress);
+        tokenIndex[_tokenAddress] = tokens.length;
+        emit TokenAdded(_tokenAddress, tokens.length - 1);
     }
 
     function removeToken(address _tokenAddress) external onlyOwner {
-        (bool whitelisted, uint256 index) = isAcceptedToken(_tokenAddress);
-        require(whitelisted, "This token isn't whitelisted.");
+        uint256 idx1 = tokenIndex[_tokenAddress];
+        require(idx1 != 0, "This token isn't whitelisted.");
         require(tokens.length > 1, "Cannot remove all tokens.");
 
-        for (uint256 i = index; i < tokens.length - 1; i++) {
-            IERC20 temp = tokens[i];
+        for (uint256 i = idx1 - 1; i < tokens.length - 1; i++) {
             tokens[i] = tokens[i + 1];
-            tokens[i + 1] = temp;
+            tokenIndex[tokens[i]] = i + 1;
         }
 
         tokens.pop();
+        tokenIndex[_tokenAddress] = 0;
         emit TokenRemoved(_tokenAddress);
     }
 
-    function changeTokenPriority(address _tokenAddress, uint256 priority) external onlyOwner {
-        require(priority < tokens.length, "Priority number out of bounds.");
-        (bool whitelisted, uint256 index) = isAcceptedToken(_tokenAddress);
-        require(whitelisted, "This token isn't whitelisted");
-        IERC20 tokenToChange = tokens[index];
-        tokens[index] = tokens[priority];
-        tokens[priority] = tokenToChange;
+    function changeTokenPriority(address _tokenAddress, uint256 _newIndex) external onlyOwner {
+        require(_newIndex < tokens.length, "New index out of bounds.");
+        require(tokenIndex[_tokenAddress] != 0, "This token isn't whitelisted");
 
-        emit TokenPriorityChanged(_tokenAddress, index, priority);
-        emit TokenPriorityChanged(address(tokens[priority]), priority, index); // Maybe this isn't a good API
+        uint256 oldIndex = tokenIndex[_tokenAddress] - 1;
+        if (oldIndex == _newIndex) return;
+
+        address tokenToChange = tokens[oldIndex];
+        if (oldIndex < _newIndex) {
+            // shift to the left
+            for (uint256 i = oldIndex; i < _newIndex; i++) {
+                tokens[i] = tokens[i + 1];
+                tokenIndex[tokens[i]] = i + 1;
+            }
+        } else {
+            // shift to the right
+            for (uint256 i = oldIndex; i > _newIndex; i--) {
+                tokens[i] = tokens[i - 1];
+                tokenIndex[tokens[i]] = i - 1;
+            }
+        }
+
+        tokens[_newIndex] = tokenToChange;
+        tokenIndex[tokenToChange] = _newIndex + 1;
+
+        emit TokenPriorityChanged(_tokenAddress, oldIndex, _newIndex);
     }
 
     function addFunds(uint256 _amount, address _tokenAddress) external {
-        (bool accepted, uint256 index) = isAcceptedToken(_tokenAddress);
-
-        require(accepted, "This token isn't whitelisted.");
+        require(tokenIndex[_tokenAddress] != 0, "This token isn't whitelisted.");
+        uint256 index = tokenIndex[_tokenAddress] - 1;
         require(
-            tokens[index].transferFrom(msg.sender, address(this), _amount),
+            IERC20(tokens[index]).transferFrom(msg.sender, address(this), _amount),
             "Transfer failed."
         );
 
         emit FundsAdded(
             _amount,
-            address(tokens[index]),
-            tokens[index].balanceOf(address(this))
+            tokens[index],
+            IERC20(tokens[index]).balanceOf(address(this))
         );
     }
 
     function withdrawFunds(address _tokenAddress) external onlyOwner {
-        (bool accepted, uint256 index) = isAcceptedToken(_tokenAddress);
-        require(accepted, "The contract doesn't have this token in balance.");
-        uint256 contractBalance = tokens[index].balanceOf(address(this));
+        require(tokenIndex[_tokenAddress] != 0, "The contract doesn't have this token in balance.");
+        uint256 index = tokenIndex[_tokenAddress] - 1;
+        uint256 contractBalance = IERC20(tokens[index]).balanceOf(address(this));
         require(
-            tokens[index].transfer(msg.sender, contractBalance),
+            IERC20(tokens[index]).transfer(msg.sender, contractBalance),
             "Transfer failed."
         );
-        emit FundsWithdrawed(address(tokens[index]), contractBalance);
+        emit FundsWithdrawn(tokens[index], contractBalance);
     }
 
     function addBeneficiary(address _userAddress) external onlyOwner {
@@ -139,27 +157,18 @@ contract SubsidyProgram is Ownable {
         addressToUser[msg.sender].totalClaimed += subsidyClaimableAmount;
         // TODO: Use uniswap and pools to swap high priority tokens for cCop
         require(
-            tokens[0].transfer(msg.sender, subsidyClaimableAmount),
+            IERC20(tokens[0]).transfer(msg.sender, subsidyClaimableAmount),
             "Not enough funds."
         );
         emit SubsidyClaimed(
             msg.sender,
             subsidyClaimableAmount,
-            tokens[0].balanceOf(address(this))
+            IERC20(tokens[0]).balanceOf(address(this))
         );
     }
 
-    function getWhitelistedTokens() public view returns (IERC20[] memory) {
+    function getWhitelistedTokens() public view returns (address[] memory) {
         return tokens;
-    }
-
-    function isAcceptedToken(
-        address _tokenAddress
-      ) public view returns (bool, uint256) {
-        for (uint256 i = 0; i < tokens.length; i++) {
-            if (address(tokens[i]) == _tokenAddress) return (true, i);
-        }
-        return (false, 2**255);
     }
 
     function isBeneficiary(
