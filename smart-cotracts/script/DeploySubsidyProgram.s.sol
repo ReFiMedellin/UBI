@@ -11,6 +11,10 @@ contract DeploySubsidyProgramTestnet is Script {
     address tokenAddress;
     address token2Address;
 
+    // For testing, use mock address for SwapRouter
+    // In production, this would be the actual SwapRouter address
+    address constant MOCK_SWAP_ROUTER = address(0x1111111111111111111111111111111111111111);
+
     function run() public returns (SubsidyProgram, address, address) {
         vm.startBroadcast();
         MockERC20 mockToken = new MockERC20(INITIAL_SUPPLY);
@@ -20,7 +24,10 @@ contract DeploySubsidyProgramTestnet is Script {
         token2Address = address(mockToken2);
 
         vm.startBroadcast();
-        SubsidyProgram subsidyProgram = new SubsidyProgram(tokenAddress);
+        SubsidyProgram subsidyProgram = new SubsidyProgram(
+            tokenAddress,
+            MOCK_SWAP_ROUTER
+        );
         vm.stopBroadcast();
 
         return (subsidyProgram, tokenAddress, token2Address);
@@ -29,10 +36,14 @@ contract DeploySubsidyProgramTestnet is Script {
 
 contract DeploySubsidyProgram is Script {
     address token = vm.envAddress("TOKEN_ADDRESS");
+    address swapRouter = vm.envAddress("SWAP_ROUTER_ADDRESS");
 
     function run() public returns (SubsidyProgram, address) {
         vm.startBroadcast();
-        SubsidyProgram subsidyProgram = new SubsidyProgram(token);
+        SubsidyProgram subsidyProgram = new SubsidyProgram(
+            token,
+            swapRouter
+        );
         vm.stopBroadcast();
 
         console.log("Subsidy program deployed at: ", address(subsidyProgram));

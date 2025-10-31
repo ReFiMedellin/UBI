@@ -3,6 +3,8 @@ pragma solidity ^0.8.28;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {TransferHelper} from "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
+import {ISwapRouter} from "./ISwapRouter.sol";
 
 contract SubsidyProgram is Ownable {
     struct User {
@@ -17,6 +19,11 @@ contract SubsidyProgram is Ownable {
 
     address[] private tokens;
     mapping(address => uint256) private tokenIndex;
+
+    // Uniswap V3 related state variables
+    ISwapRouter public immutable swapRouter;
+    uint256 public maxSlippageBps; // e.g., 100 = 1%
+    mapping(address => uint24) public tokenToFeeTier; // Maps token to pool fee tier
 
     event FundsAdded(uint256 amount, address tokenAddress, uint256 tokenBalance);
     event FundsWithdrawn(address tokenAddress, uint256 amountWithdrawed);
@@ -37,9 +44,14 @@ contract SubsidyProgram is Ownable {
         uint256 newIndex
     );
 
-    constructor(address _tokenAddress) Ownable(msg.sender) {
+    constructor(
+        address _tokenAddress,
+        address _swapRouter
+    ) Ownable(msg.sender) {
         tokens.push(_tokenAddress);
         tokenIndex[_tokenAddress] = 1;
+        swapRouter = ISwapRouter(_swapRouter);
+        maxSlippageBps = 100; // Default 1%
     }
 
     function setClaimInterval(uint256 _interval) external onlyOwner {
@@ -50,6 +62,20 @@ contract SubsidyProgram is Ownable {
     function setClaimableAmount(uint256 _amount) external onlyOwner {
         subsidyClaimableAmount = _amount;
         emit ClaimableAmountSet(_amount);
+    }
+
+    function setMaxSlippage(uint256 _bps) external onlyOwner {
+        require(_bps <= 1000, "Max 10% slippage");
+        maxSlippageBps = _bps;
+    }
+
+    function setTokenFeeTier(
+        address _tokenAddress,
+        uint24 _feeTier
+    ) external onlyOwner {
+        require(tokenIndex[_tokenAddress] != 0, "Token not whitelisted");
+        require(_tokenAddress != tokens[0], "Cannot set fee tier for cCop");
+        tokenToFeeTier[_tokenAddress] = _feeTier;
     }
 
     function addToken(address _tokenAddress) external onlyOwner {
@@ -145,6 +171,35 @@ contract SubsidyProgram is Ownable {
         emit BeneficiaryRemoved(_userAddress);
     }
 
+    function _swapTokenToCCop(
+        address tokenIn,
+        uint256 amountOut,
+        uint256 amountInMaximum
+    ) internal returns (uint256 amountIn) {
+        uint24 feeTier = tokenToFeeTier[tokenIn];
+        require(feeTier != 0, "Fee tier not set for token");
+
+        // Approve the router to spend the token
+        TransferHelper.safeApprove(tokenIn, address(swapRouter), type(uint256).max);
+
+        ISwapRouter.ExactOutputSingleParams memory params =
+            ISwapRouter.ExactOutputSingleParams({
+            tokenIn: tokenIn,
+            tokenOut: tokens[0],
+            fee: feeTier,
+            recipient: address(this),
+            amountOut: amountOut,
+            amountInMaximum: amountInMaximum,
+            sqrtPriceLimitX96: 0
+        });
+
+        amountIn = swapRouter.exactOutputSingle(params);
+
+        IERC20(tokenIn).approve(address(swapRouter), 0);
+        
+        return amountIn;
+    }
+
     function claimSubsidy() public {
         require(isBeneficiary(msg.sender), "Address is not a beneficiary.");
         require(
@@ -153,13 +208,36 @@ contract SubsidyProgram is Ownable {
             "Cannot claim yet."
         );
 
+        // Iterate tokens in reverse order (lowest priority first)
+        for (uint256 i = tokens.length - 1; i > 0; i--) {
+            address tokenToSwap = tokens[i];
+            uint256 tokenBalance = IERC20(tokenToSwap).balanceOf(address(this));
+
+            uint256 amountIn = _swapTokenToCCop(
+                tokenToSwap,
+                subsidyClaimableAmount,
+                tokenBalance
+            );
+
+            if (amountIn > 0) break;
+        }
+
+        // Check if we still need more cCop
+        uint256 cCopBalance = IERC20(tokens[0]).balanceOf(address(this));
+
+        require(
+            cCopBalance >= subsidyClaimableAmount,
+            "Not enough funds even after swaps."
+        );
+
         addressToUser[msg.sender].lastClaimed = block.timestamp;
         addressToUser[msg.sender].totalClaimed += subsidyClaimableAmount;
-        // TODO: Use uniswap and pools to swap high priority tokens for cCop
+
         require(
             IERC20(tokens[0]).transfer(msg.sender, subsidyClaimableAmount),
-            "Not enough funds."
+            "Transfer failed."
         );
+
         emit SubsidyClaimed(
             msg.sender,
             subsidyClaimableAmount,
