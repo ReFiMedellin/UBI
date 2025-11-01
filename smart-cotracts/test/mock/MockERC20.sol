@@ -8,3 +8,9 @@ contract MockERC20 is ERC20 {
         _mint(msg.sender, _initialSupply);
     }
 }
+
+contract OtherMock is ERC20 {
+    constructor(uint256 _initialSupply) ERC20("Mocky", "OMK") {
+        _mint(msg.sender, _initialSupply);
+    }
+}

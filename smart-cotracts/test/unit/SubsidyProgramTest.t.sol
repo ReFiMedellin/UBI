@@ -8,7 +8,8 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract SubsidyProgramTest is Test {
     SubsidyProgram subsidyProgram;
-    IERC20 token;
+    IERC20 token1;
+    IERC20 token2;
 
     uint256 constant INTERVAL_TIME = 2 weeks;
     uint256 constant TOKEN_AMOUNT = 500;
@@ -18,9 +19,10 @@ contract SubsidyProgramTest is Test {
 
     function setUp() external {
         DeploySubsidyProgramTestnet deployer = new DeploySubsidyProgramTestnet();
-        (SubsidyProgram subsidyProgram_, address tokenAddress) = deployer.run();
+        (SubsidyProgram subsidyProgram_, address tokenAddress, address token2Address) = deployer.run();
         subsidyProgram = subsidyProgram_;
-        token = IERC20(tokenAddress);
+        token1 = IERC20(tokenAddress);
+        token2 = IERC20(token2Address);
     }
 
     function testClaimIntervalSetCorrectly() public {
@@ -45,35 +47,123 @@ contract SubsidyProgramTest is Test {
         subsidyProgram.setClaimableAmount(TOKEN_AMOUNT);
     }
 
+    function testAddToken() public {
+        // Get initial tokens (should only have token1 from constructor)
+        address[] memory initialTokens = subsidyProgram.getWhitelistedTokens();
+        assertEq(initialTokens.length, 1);
+        assertEq(initialTokens[0], address(token1));
+        
+        // Add token2
+        vm.prank(msg.sender);
+        subsidyProgram.addToken(address(token2));
+        
+        // Verify token2 was added
+        address[] memory updatedTokens = subsidyProgram.getWhitelistedTokens();
+        assertEq(updatedTokens.length, 2);
+        assertEq(updatedTokens[0], address(token1));
+        assertEq(updatedTokens[1], address(token2));
+
+        vm.expectRevert();
+        subsidyProgram.addToken(address(token2));
+
+        vm.prank(msg.sender);
+        vm.expectRevert();
+        subsidyProgram.addToken(address(token2));
+    }
+
+    function testRemoveToken() public {
+        vm.prank(msg.sender);
+        subsidyProgram.addToken(address(token2));
+
+
+        vm.expectRevert();
+        subsidyProgram.removeToken(address(token2));
+        vm.expectRevert();
+        subsidyProgram.removeToken(address(1));
+
+        vm.startPrank(msg.sender);
+        subsidyProgram.removeToken(address(token2));
+
+        vm.expectRevert();
+        subsidyProgram.removeToken(address(token1));
+        vm.stopPrank();
+
+        address[] memory tokens = subsidyProgram.getWhitelistedTokens();
+        assertEq(tokens.length, 1);
+    }
+
+    function testTokenPriority() public {
+        address[] memory tokens = subsidyProgram.getWhitelistedTokens();
+        assertEq(tokens[0], address(token1));
+
+        vm.startPrank(msg.sender);
+        subsidyProgram.addToken(address(token2));
+        subsidyProgram.addToken(address(1)); // I got fed up of making new tokens
+        subsidyProgram.changeTokenPriority(address(token2), 2);
+
+        vm.expectRevert();
+        subsidyProgram.changeTokenPriority(address(999), 0);
+
+        vm.expectRevert();
+        subsidyProgram.changeTokenPriority(address(token2), 2**10);
+
+        vm.stopPrank();
+
+        vm.expectRevert();
+        subsidyProgram.changeTokenPriority(address(token2), 1);
+
+        tokens = subsidyProgram.getWhitelistedTokens();
+        assertEq(address(tokens[1]), address(1));
+        assertEq(address(tokens[2]), address(token2));
+    }
+
     function testAddFundsCorrectly() public {
         vm.startPrank(msg.sender);
-        token.approve(address(subsidyProgram), TOKEN_AMOUNT);
-        subsidyProgram.addFunds(TOKEN_AMOUNT);
+        token1.approve(address(subsidyProgram), TOKEN_AMOUNT);
+        subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
         vm.stopPrank();
-        assertEq(token.balanceOf(address(subsidyProgram)), TOKEN_AMOUNT);
+        assertEq(token1.balanceOf(address(subsidyProgram)), TOKEN_AMOUNT);
+    }
+
+    function testAddFundsWithOtherTokenCorrectly() public {
+        vm.startPrank(msg.sender);
+        subsidyProgram.addToken(address(token2));
+        token1.approve(address(subsidyProgram), TOKEN_AMOUNT);
+        subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
+        token2.approve(address(subsidyProgram), TOKEN_AMOUNT);
+        subsidyProgram.addFunds(TOKEN_AMOUNT, address(token2));
+        vm.stopPrank();
+        assertEq(token1.balanceOf(address(subsidyProgram)), TOKEN_AMOUNT);
+        assertEq(token2.balanceOf(address(subsidyProgram)), TOKEN_AMOUNT);
     }
 
     function testAddFundsFails() public {
         vm.expectRevert();
-        subsidyProgram.addFunds(TOKEN_AMOUNT);
+        subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
     }
 
     function testWithdrawFundsCorrectly() public {
-        uint256 initialBalance = token.balanceOf(msg.sender);
+        uint256 initialBalance = token1.balanceOf(msg.sender);
         vm.startPrank(msg.sender);
-        token.approve(address(subsidyProgram), TOKEN_AMOUNT);
-        subsidyProgram.addFunds(TOKEN_AMOUNT);
+        token1.approve(address(subsidyProgram), TOKEN_AMOUNT);
+        subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
 
-        subsidyProgram.withdrawFunds();
+        subsidyProgram.withdrawFunds(address(token1));
         vm.stopPrank();
 
-        assertEq(token.balanceOf(address(subsidyProgram)), 0);
-        assertEq(token.balanceOf(msg.sender), initialBalance);
+        assertEq(token1.balanceOf(address(subsidyProgram)), 0);
+        assertEq(token1.balanceOf(msg.sender), initialBalance);
     }
 
     function testWithdrawFundsFailsIfNotOwner() public {
         vm.expectRevert();
-        subsidyProgram.withdrawFunds();
+        subsidyProgram.withdrawFunds(address(token1));
+    }
+
+    function testWithdrawFundsFailsIfNotAcceptedToken() public {
+        vm.prank(msg.sender);
+        vm.expectRevert();
+        subsidyProgram.withdrawFunds(address(token2));
     }
 
     function testAddBeneficiaryCorrectly() public {
@@ -152,8 +242,8 @@ contract SubsidyProgramTest is Test {
         vm.warp(TEN_YEARS);
 
         vm.startPrank(msg.sender);
-        token.approve(address(subsidyProgram), TOKEN_AMOUNT);
-        subsidyProgram.addFunds(TOKEN_AMOUNT);
+        token1.approve(address(subsidyProgram), TOKEN_AMOUNT);
+        subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
         subsidyProgram.setClaimableAmount(TOKEN_AMOUNT);
         subsidyProgram.addBeneficiary(USER);
         vm.stopPrank();
@@ -161,7 +251,7 @@ contract SubsidyProgramTest is Test {
         vm.prank(USER);
         subsidyProgram.claimSubsidy();
 
-        assertEq(token.balanceOf(USER), TOKEN_AMOUNT);
+        assertEq(token1.balanceOf(USER), TOKEN_AMOUNT);
     }
 
     function testClaimSubsidyFailsIfNotBeneficiary() public {
@@ -170,8 +260,8 @@ contract SubsidyProgramTest is Test {
         address beneficiary = address(2);
 
         vm.startPrank(msg.sender);
-        token.approve(address(subsidyProgram), TOKEN_AMOUNT);
-        subsidyProgram.addFunds(TOKEN_AMOUNT);
+        token1.approve(address(subsidyProgram), TOKEN_AMOUNT);
+        subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
         subsidyProgram.setClaimableAmount(TOKEN_AMOUNT);
         subsidyProgram.addBeneficiary(beneficiary);
         vm.stopPrank();
@@ -185,8 +275,8 @@ contract SubsidyProgramTest is Test {
         vm.warp(TEN_YEARS);
 
         vm.startPrank(msg.sender);
-        token.approve(address(subsidyProgram), TOKEN_AMOUNT);
-        subsidyProgram.addFunds(TOKEN_AMOUNT);
+        token1.approve(address(subsidyProgram), TOKEN_AMOUNT);
+        subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
         subsidyProgram.setClaimableAmount(TOKEN_AMOUNT);
         subsidyProgram.addBeneficiary(USER);
         vm.stopPrank();
