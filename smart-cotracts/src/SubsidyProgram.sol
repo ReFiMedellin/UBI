@@ -20,10 +20,8 @@ contract SubsidyProgram is Ownable {
     address[] private tokens;
     mapping(address => uint256) private tokenIndex;
 
-    // Uniswap V3 related state variables
     ISwapRouter public immutable swapRouter;
-    uint256 public maxSlippageBps; // e.g., 100 = 1%
-    mapping(address => uint24) public tokenToFeeTier; // Maps token to pool fee tier
+    mapping(address => uint24) public tokenToFeeTier;
 
     event FundsAdded(uint256 amount, address tokenAddress, uint256 tokenBalance);
     event FundsWithdrawn(address tokenAddress, uint256 amountWithdrawed);
@@ -43,6 +41,7 @@ contract SubsidyProgram is Ownable {
         uint256 oldIndex,
         uint256 newIndex
     );
+    event TokenSwapped(address indexed tokenAddress, uint256 amountIn, uint256 amountOut);
 
     constructor(
         address _tokenAddress,
@@ -51,7 +50,6 @@ contract SubsidyProgram is Ownable {
         tokens.push(_tokenAddress);
         tokenIndex[_tokenAddress] = 1;
         swapRouter = ISwapRouter(_swapRouter);
-        maxSlippageBps = 100; // Default 1%
     }
 
     function setClaimInterval(uint256 _interval) external onlyOwner {
@@ -62,11 +60,6 @@ contract SubsidyProgram is Ownable {
     function setClaimableAmount(uint256 _amount) external onlyOwner {
         subsidyClaimableAmount = _amount;
         emit ClaimableAmountSet(_amount);
-    }
-
-    function setMaxSlippage(uint256 _bps) external onlyOwner {
-        require(_bps <= 1000, "Max 10% slippage");
-        maxSlippageBps = _bps;
     }
 
     function setTokenFeeTier(
@@ -179,8 +172,7 @@ contract SubsidyProgram is Ownable {
         uint24 feeTier = tokenToFeeTier[tokenIn];
         require(feeTier != 0, "Fee tier not set for token");
 
-        // Approve the router to spend the token
-        TransferHelper.safeApprove(tokenIn, address(swapRouter), type(uint256).max);
+        TransferHelper.safeApprove(tokenIn, address(swapRouter), amountInMaximum);
 
         ISwapRouter.ExactOutputSingleParams memory params =
             ISwapRouter.ExactOutputSingleParams({
@@ -195,7 +187,9 @@ contract SubsidyProgram is Ownable {
 
         amountIn = swapRouter.exactOutputSingle(params);
 
-        IERC20(tokenIn).approve(address(swapRouter), 0);
+        emit TokenSwapped(tokenIn, amountIn, amountOut);
+
+        TransferHelper.safeApprove(tokenIn, address(swapRouter), 0);
         
         return amountIn;
     }

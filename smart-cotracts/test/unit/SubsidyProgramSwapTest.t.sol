@@ -136,35 +136,6 @@ contract SubsidyProgramSwapTest is Test {
         subsidyProgram.claimSubsidy();
     }
 
-    function testSlippageProtection() public {
-        vm.warp(TEN_YEARS);
-        
-        // Set high slippage tolerance
-        vm.prank(msg.sender);
-        subsidyProgram.setMaxSlippage(1000); // 10%
-        
-        // Add funds - insufficient cCop, need to swap token2
-        vm.startPrank(msg.sender);
-        token1.approve(address(subsidyProgram), TOKEN_AMOUNT / 3); // Only 1/3 of needed cCop
-        token2.approve(address(subsidyProgram), TOKEN_AMOUNT);
-        
-        subsidyProgram.addFunds(TOKEN_AMOUNT / 3, address(token1));
-        subsidyProgram.addFunds(TOKEN_AMOUNT, address(token2));
-        subsidyProgram.setClaimableAmount(TOKEN_AMOUNT);
-        subsidyProgram.addBeneficiary(USER);
-        vm.stopPrank();
-        
-        // Configure router to pull some token2 and send enough token1
-        mockSwapRouter.setNextAmountIn(TOKEN_AMOUNT);
-
-        // Claim should work with high slippage tolerance
-        vm.prank(USER);
-        subsidyProgram.claimSubsidy();
-        
-        // Verify user received the full subsidy amount
-        assertEq(token1.balanceOf(USER), TOKEN_AMOUNT);
-    }
-
     function testMultipleTokenPriority() public {
         vm.warp(TEN_YEARS);
         
