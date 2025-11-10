@@ -12,6 +12,17 @@ type Funds @entity(immutable: false) {
   totalWithdrawn: BigInt! # uint256
   totalClaimed: BigInt! # uint256
   contractBalance: BigInt! # uint256
+
+  tokens: [TokenBalance!] @derivedFrom(field: "funds")
+}
+
+type TokenBalance @entity(immutable: false) {
+  id: Bytes! # tokenAddress
+  token: Bytes!
+  balance: BigInt!
+  totalSwapped: BigInt!
+  totalWithdrawn: BigInt!
+  funds: Funds!
 }
 
 type DailyClaim @entity(immutable: false) {
@@ -21,10 +32,3 @@ type DailyClaim @entity(immutable: false) {
   totalAmount: BigInt!
   beneficiaries: [Bytes!]! # List of beneficiary addresses who claimed on this day
 }
-
-# type DailyActiveBeneficiaries @entity(immutable: false) {
-#   id: ID! # format: YYYY-MM-DD
-#   date: BigInt!
-#   count: BigInt!
-#   beneficiaries: [Bytes!]! # List of active beneficiary addresses on this day
-# }
