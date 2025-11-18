@@ -1,16 +1,19 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
 import {
   BeneficiaryAdded as BeneficiaryAddedEvent,
   BeneficiaryRemoved as BeneficiaryRemovedEvent,
   SubsidyClaimed as SubsidyClaimedEvent,
   FundsAdded as FundsAddedEvent,
-  FundsWithdrawed as FundsWithdrawedEvent,
+  FundsWithdrawn as FundsWithdrawnEvent,
 } from "../generated/SubsidyProgram/SubsidyProgram"
 import {
   Beneficiary,
   Funds,
   DailyClaim,
+  TokenBalance,
 } from "../generated/schema"
+
+const BASE_TOKEN = Bytes.fromHexString("0x8A567e2aE79CA692Bd748aB832081C45de4041eA")
 
 // Helper function to get or create DailyClaim entity
 function getOrCreateDailyClaim(timestamp: BigInt): DailyClaim {
@@ -38,6 +41,20 @@ function getOrCreateFunds(address: Address): Funds {
     funds.totalClaimed = BigInt.zero()
   }
   return funds
+}
+
+function getOrCreateTokenBalance(funds: Funds, token: Bytes): TokenBalance {
+  let id = token
+  let tb = TokenBalance.load(id)
+  if (!tb) {
+    tb = new TokenBalance(id)
+    tb.token = token
+    tb.balance = BigInt.zero()
+    tb.totalSwapped = BigInt.zero()
+    tb.totalWithdrawn = BigInt.zero()
+    tb.funds = funds.id
+  }
+  return tb
 }
 
 export function handleBeneficiaryAdded(event: BeneficiaryAddedEvent): void {
@@ -101,7 +118,7 @@ export function handleFundsAdded(event: FundsAddedEvent): void {
   funds.save()
 }
 
-export function handleFundsWithdrawed(event: FundsWithdrawedEvent): void {
+export function handleFundsWithdrawn(event: FundsWithdrawnEvent): void {
   let funds = getOrCreateFunds(event.address)
 
   funds.totalWithdrawn = funds.totalWithdrawn.plus(event.params.amountWithdrawed)

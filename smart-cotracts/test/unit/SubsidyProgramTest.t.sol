@@ -17,32 +17,42 @@ contract SubsidyProgramTest is Test {
 
     address constant USER = address(1);
 
+    address owner;
+    address constant NOT_OWNER = address(0x123);
+
     function setUp() external {
+        owner = address(this); // Test contract is the owner
         DeploySubsidyProgramTestnet deployer = new DeploySubsidyProgramTestnet();
-        (SubsidyProgram subsidyProgram_, address tokenAddress, address token2Address) = deployer.run();
+        (SubsidyProgram subsidyProgram_, address tokenAddress, address token2Address) = deployer.run(owner);
         subsidyProgram = subsidyProgram_;
         token1 = IERC20(tokenAddress);
         token2 = IERC20(token2Address);
+        
+        // Give test contract tokens for testing
+        deal(address(token1), owner, 1000000);
+        deal(address(token2), owner, 1000000);
     }
 
     function testClaimIntervalSetCorrectly() public {
-        vm.prank(msg.sender);
+        vm.prank(owner);
         subsidyProgram.setClaimInterval(INTERVAL_TIME);
         assertEq(subsidyProgram.subsidyClaimInterval(), INTERVAL_TIME);
     }
 
     function testClaimIntervalSetFailsIfNotOwner() public {
+        vm.prank(NOT_OWNER);
         vm.expectRevert();
         subsidyProgram.setClaimInterval(INTERVAL_TIME);
     }
 
     function testClaimableAmountSetCorrectly() public {
-        vm.prank(msg.sender);
+        vm.prank(owner);
         subsidyProgram.setClaimableAmount(TOKEN_AMOUNT);
         assertEq(subsidyProgram.subsidyClaimableAmount(), TOKEN_AMOUNT);
     }
 
     function testClaimableAmountSetFailsIfNotOwner() public {
+        vm.prank(NOT_OWNER);
         vm.expectRevert();
         subsidyProgram.setClaimableAmount(TOKEN_AMOUNT);
     }
@@ -54,7 +64,7 @@ contract SubsidyProgramTest is Test {
         assertEq(initialTokens[0], address(token1));
         
         // Add token2
-        vm.prank(msg.sender);
+        vm.prank(owner);
         subsidyProgram.addToken(address(token2));
         
         // Verify token2 was added
@@ -66,22 +76,23 @@ contract SubsidyProgramTest is Test {
         vm.expectRevert();
         subsidyProgram.addToken(address(token2));
 
-        vm.prank(msg.sender);
+        vm.prank(owner);
         vm.expectRevert();
         subsidyProgram.addToken(address(token2));
     }
 
     function testRemoveToken() public {
-        vm.prank(msg.sender);
+        vm.prank(owner);
         subsidyProgram.addToken(address(token2));
 
-
+        vm.prank(NOT_OWNER);
         vm.expectRevert();
         subsidyProgram.removeToken(address(token2));
+        vm.prank(NOT_OWNER);
         vm.expectRevert();
         subsidyProgram.removeToken(address(1));
 
-        vm.startPrank(msg.sender);
+        vm.startPrank(owner);
         subsidyProgram.removeToken(address(token2));
 
         vm.expectRevert();
@@ -96,7 +107,7 @@ contract SubsidyProgramTest is Test {
         address[] memory tokens = subsidyProgram.getWhitelistedTokens();
         assertEq(tokens[0], address(token1));
 
-        vm.startPrank(msg.sender);
+        vm.startPrank(owner);
         subsidyProgram.addToken(address(token2));
         subsidyProgram.addToken(address(1)); // I got fed up of making new tokens
         subsidyProgram.changeTokenPriority(address(token2), 2);
@@ -109,6 +120,7 @@ contract SubsidyProgramTest is Test {
 
         vm.stopPrank();
 
+        vm.prank(NOT_OWNER);
         vm.expectRevert();
         subsidyProgram.changeTokenPriority(address(token2), 1);
 
@@ -118,7 +130,7 @@ contract SubsidyProgramTest is Test {
     }
 
     function testAddFundsCorrectly() public {
-        vm.startPrank(msg.sender);
+        vm.startPrank(owner);
         token1.approve(address(subsidyProgram), TOKEN_AMOUNT);
         subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
         vm.stopPrank();
@@ -126,7 +138,7 @@ contract SubsidyProgramTest is Test {
     }
 
     function testAddFundsWithOtherTokenCorrectly() public {
-        vm.startPrank(msg.sender);
+        vm.startPrank(owner);
         subsidyProgram.addToken(address(token2));
         token1.approve(address(subsidyProgram), TOKEN_AMOUNT);
         subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
@@ -143,8 +155,8 @@ contract SubsidyProgramTest is Test {
     }
 
     function testWithdrawFundsCorrectly() public {
-        uint256 initialBalance = token1.balanceOf(msg.sender);
-        vm.startPrank(msg.sender);
+        uint256 initialBalance = token1.balanceOf(owner);
+        vm.startPrank(owner);
         token1.approve(address(subsidyProgram), TOKEN_AMOUNT);
         subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
 
@@ -152,23 +164,24 @@ contract SubsidyProgramTest is Test {
         vm.stopPrank();
 
         assertEq(token1.balanceOf(address(subsidyProgram)), 0);
-        assertEq(token1.balanceOf(msg.sender), initialBalance);
+        assertEq(token1.balanceOf(owner), initialBalance);
     }
 
     function testWithdrawFundsFailsIfNotOwner() public {
+        vm.prank(NOT_OWNER);
         vm.expectRevert();
         subsidyProgram.withdrawFunds(address(token1));
     }
 
     function testWithdrawFundsFailsIfNotAcceptedToken() public {
-        vm.prank(msg.sender);
+        vm.prank(owner);
         vm.expectRevert();
         subsidyProgram.withdrawFunds(address(token2));
     }
 
     function testAddBeneficiaryCorrectly() public {
         vm.warp(TEN_YEARS);
-        vm.prank(msg.sender);
+        vm.prank(owner);
         subsidyProgram.addBeneficiary(USER);
 
         assert(subsidyProgram.isBeneficiary(USER));
@@ -176,20 +189,21 @@ contract SubsidyProgramTest is Test {
 
     function testAddBeneficiaryFailsIfZeroAddress() public {
         vm.warp(TEN_YEARS);
-        vm.prank(msg.sender);
+        vm.prank(owner);
         vm.expectRevert();
         subsidyProgram.addBeneficiary(address(0));
     }
 
     function testAddBeneficiaryFailsIfNotOwner() public {
         vm.warp(TEN_YEARS);
+        vm.prank(NOT_OWNER);
         vm.expectRevert();
         subsidyProgram.addBeneficiary(USER);
     }
 
     function testAddBeneficiaryFailsIfAlreadyIs() public {
         vm.warp(TEN_YEARS);
-        vm.startPrank(msg.sender);
+        vm.startPrank(owner);
         subsidyProgram.addBeneficiary(USER);
 
         vm.expectRevert();
@@ -200,18 +214,18 @@ contract SubsidyProgramTest is Test {
 
     function testRemoveBeneficiaryCorrectly() public {
         vm.warp(TEN_YEARS);
-        vm.startPrank(msg.sender);
+        vm.startPrank(owner);
         subsidyProgram.addBeneficiary(USER);
         subsidyProgram.removeBeneficiary(USER);
         vm.stopPrank();
 
-        (uint256 lastClaimed,) = subsidyProgram.addressToUser(USER);
-        assertEq(lastClaimed, 0);
+        SubsidyProgram.User memory user = subsidyProgram.addressToUser(USER);
+        assertEq(user.lastClaimed, 0);
     }
 
     function testRemoveBeneficiaryFailsIfNotBeneficiary() public {
         vm.warp(TEN_YEARS);
-        vm.startPrank(msg.sender);
+        vm.startPrank(owner);
         subsidyProgram.addBeneficiary(USER);
 
         vm.expectRevert();
@@ -225,7 +239,7 @@ contract SubsidyProgramTest is Test {
         uint160 numberOfBeneficiaries = 5;
         uint160 startIndex = 2;
 
-        vm.startPrank(msg.sender);
+        vm.startPrank(owner);
         subsidyProgram.addBeneficiary(USER);
         for (uint160 i = startIndex; i <= numberOfBeneficiaries; i++) {
             subsidyProgram.addBeneficiary(address(i));
@@ -241,7 +255,7 @@ contract SubsidyProgramTest is Test {
     function testClaimSubsidyCorrectly() public {
         vm.warp(TEN_YEARS);
 
-        vm.startPrank(msg.sender);
+        vm.startPrank(owner);
         token1.approve(address(subsidyProgram), TOKEN_AMOUNT);
         subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
         subsidyProgram.setClaimableAmount(TOKEN_AMOUNT);
@@ -259,7 +273,7 @@ contract SubsidyProgramTest is Test {
 
         address beneficiary = address(2);
 
-        vm.startPrank(msg.sender);
+        vm.startPrank(owner);
         token1.approve(address(subsidyProgram), TOKEN_AMOUNT);
         subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
         subsidyProgram.setClaimableAmount(TOKEN_AMOUNT);
@@ -274,7 +288,7 @@ contract SubsidyProgramTest is Test {
     function testClaimSubsidyFailsIfNotEnoughTime() public {
         vm.warp(TEN_YEARS);
 
-        vm.startPrank(msg.sender);
+        vm.startPrank(owner);
         token1.approve(address(subsidyProgram), TOKEN_AMOUNT);
         subsidyProgram.addFunds(TOKEN_AMOUNT, address(token1));
         subsidyProgram.setClaimableAmount(TOKEN_AMOUNT);
@@ -294,7 +308,7 @@ contract SubsidyProgramTest is Test {
     function testClaimSubsidyFailsIfNotEnoughFunds() public {
         vm.warp(TEN_YEARS);
 
-        vm.startPrank(msg.sender);
+        vm.startPrank(owner);
         subsidyProgram.setClaimableAmount(TOKEN_AMOUNT);
         subsidyProgram.addBeneficiary(USER);
         vm.stopPrank();
