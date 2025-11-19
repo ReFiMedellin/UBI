@@ -5,6 +5,8 @@ import {
   SubsidyClaimed as SubsidyClaimedEvent,
   FundsAdded as FundsAddedEvent,
   FundsWithdrawn as FundsWithdrawnEvent,
+  TokenSwapped as TokenSwappedEvent,
+  TokenAdded as TokenAddedEvent,
 } from "../generated/SubsidyProgram/SubsidyProgram"
 import {
   Beneficiary,
@@ -44,10 +46,9 @@ function getOrCreateFunds(address: Address): Funds {
 }
 
 function getOrCreateTokenBalance(funds: Funds, token: Bytes): TokenBalance {
-  let id = token
-  let tb = TokenBalance.load(id)
+  let tb = TokenBalance.load(token)
   if (!tb) {
-    tb = new TokenBalance(id)
+    tb = new TokenBalance(token)
     tb.token = token
     tb.balance = BigInt.zero()
     tb.totalSwapped = BigInt.zero()
@@ -112,8 +113,14 @@ export function handleSubsidyClaimed(event: SubsidyClaimedEvent): void {
 export function handleFundsAdded(event: FundsAddedEvent): void {
   let funds = getOrCreateFunds(event.address)
 
-  funds.totalSupplied = funds.totalSupplied.plus(event.params.amount)
-  funds.contractBalance = event.params.contractBalance
+  if (event.params.tokenAddress == BASE_TOKEN) {
+    funds.totalSupplied = funds.totalSupplied.plus(event.params.amount)
+    funds.contractBalance = event.params.tokenBalance
+  } else {
+    let tb = getOrCreateTokenBalance(funds, event.params.tokenAddress)
+    tb.balance = event.params.tokenBalance
+    tb.save()
+  }
 
   funds.save()
 }
@@ -121,8 +128,33 @@ export function handleFundsAdded(event: FundsAddedEvent): void {
 export function handleFundsWithdrawn(event: FundsWithdrawnEvent): void {
   let funds = getOrCreateFunds(event.address)
 
-  funds.totalWithdrawn = funds.totalWithdrawn.plus(event.params.amountWithdrawed)
-  funds.contractBalance = funds.contractBalance.minus(event.params.amountWithdrawed)
+  if (event.params.tokenAddress == BASE_TOKEN) {
+    funds.totalWithdrawn = funds.totalWithdrawn.plus(event.params.amountWithdrawed)
+    funds.contractBalance = funds.contractBalance.minus(event.params.amountWithdrawed)
+  } else {
+    let tb = getOrCreateTokenBalance(funds, event.params.tokenAddress)
+    tb.totalWithdrawn = tb.totalWithdrawn.plus(event.params.amountWithdrawed)
+    tb.balance = tb.balance.minus(event.params.amountWithdrawed)
+    tb.save()
+  }
 
+  funds.save()
+}
+
+export function handleTokenAdded(event: TokenAddedEvent): void {
+  let funds = getOrCreateFunds(event.address)
+  let tb = getOrCreateTokenBalance(funds, event.params.tokenAddress)
+  tb.save()
+}
+
+export function handleTokenSwapped(event: TokenSwappedEvent): void {
+  let funds = getOrCreateFunds(event.address)
+  let tb = getOrCreateTokenBalance(funds, event.params.tokenAddress)
+
+  tb.totalSwapped = tb.totalSwapped.plus(event.params.amountIn)
+  tb.balance = tb.balance.minus(event.params.amountIn)
+  funds.contractBalance = funds.contractBalance.plus(event.params.amountOut)
+
+  tb.save()
   funds.save()
 }

@@ -3,14 +3,19 @@ indexerHints:
   prune: auto
 schema:
   file: ./schema.graphql
+features:
+  - grafting
+graft:
+  base: Qmb6TtJ3e8btLVkwcBYQFktAXJWgRjcYwjHszQ865YvHcv # Deployment ID of the base subgraph
+  block: 51667562 # End block
 dataSources:
   - kind: ethereum
     name: SubsidyProgram
     network: celo
     source:
-      address: "0xFE349b47E67EaF865BA0afb9d979F3367a9C3d2E"
+      address: "0xAbE493F082f41B432696F715f84D5471F48cdA2B"
       abi: SubsidyProgram
-      startBlock: 50369567 
+      startBlock: 51341193
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
