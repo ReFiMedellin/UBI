@@ -18,7 +18,23 @@ function Header({
 }: HeaderProps) {
   const getHeaderMessage = () => {
     if (!isWhiteListed) {
-      return 'Lo sentimos, aún no eres beneficiario';
+      return (
+        <div className="text-center space-y-3">
+          <div className="text-base text-gray-700 leading-relaxed">
+            <p className="mb-2">
+              El Programa de Subsidios ReFi Colombia es una iniciativa que proporciona subsidios periódicos en cCOP 
+              (Celo Colombian Peso) a beneficiarios elegibles en la red Celo.
+            </p>
+            <p>
+              Los beneficiarios pueden reclamar su subsidio cada cierto intervalo de tiempo, contribuyendo así 
+              a la inclusión financiera y el acceso a servicios descentralizados.
+            </p>
+          </div>
+          <div className="text-lg font-semibold text-gray-900 mt-4">
+            Lo sentimos, aún no eres beneficiario
+          </div>
+        </div>
+      );
     } else if (isAbleToClaim) {
       return `Monto disponible para reclamar: ${new Intl.NumberFormat('es-CO', {
         style: 'currency',

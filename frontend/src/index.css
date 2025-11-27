@@ -71,31 +71,31 @@ button:focus-visible {
 
 @layer base {
   :root {
-    --gradient: linear-gradient(to top left, #4be58c, #00a86b, #008080);
-    --background: 190 44.8% 94%; /* Un fondo claro y brillante */
-    --foreground: 190 6.9% 10%; /* Texto oscuro */
-    --muted: 190 34.5% 90%; /* Tonalidad pastel para áreas sutiles */
-    --muted-foreground: 190 6.9% 20%;
-    --popover: 190 51.2% 95%;
-    --popover-foreground: 190 6.9% 10%;
-    --card: 190 51.2% 95%; /* Fondo claro para tarjetas */
-    --card-foreground: 190 6.9% 10%;
-    --border: 190 34.5% 75%;
-    --input: 190 34.5% 75%;
-    --primary: 173 69% 45%; /* Verde vibrante como color principal */
+    --gradient: linear-gradient(to top left, #00a86b, #008080, #0071BC);
+    --background: 150 20% 98%; /* Fondo muy claro con tinte verde suave */
+    --foreground: 150 10% 10%; /* Texto oscuro */
+    --muted: 150 15% 92%; /* Tonalidad pastel verde suave */
+    --muted-foreground: 150 5% 30%;
+    --popover: 150 25% 97%;
+    --popover-foreground: 150 10% 10%;
+    --card: 0 0% 100%; /* Fondo blanco puro para tarjetas */
+    --card-foreground: 150 10% 10%;
+    --border: 150 15% 85%;
+    --input: 150 15% 90%;
+    --primary: 150 65% 35%; /* Verde ReFi principal (#008000 aproximado) */
     --primary-foreground: 0 0% 100%; /* Blanco puro para texto en primario */
-    --secondary: 200 60% 70%; /* Azul brillante como secundario */
-    --secondary-foreground: 0 0% 15%; /* Texto oscuro en secundario */
-    --accent: 190 60% 50%; /* Verde esmeralda como acento */
+    --secondary: 195 60% 50%; /* Azul teal como secundario (#0071BC aproximado) */
+    --secondary-foreground: 0 0% 100%;
+    --accent: 150 55% 45%; /* Verde esmeralda como acento */
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 70% 50%; /* Rojo más suave para alertas destructivas */
+    --destructive: 0 70% 50%; /* Rojo para alertas destructivas */
     --destructive-foreground: 0 0% 100%;
-    --ring: 173 69% 45%; /* Anillos verdes */
-    --chart-1: 43 74% 66%; /* Verde brillante */
-    --chart-2: 197 57% 59%; /* Azul turquesa */
-    --chart-3: 173 60% 40%; /* Verde bosque */
-    --chart-4: 27 87% 67%; /* Amarillo verdoso */
-    --chart-5: 210 55% 65%; /* Azul cielo */
+    --ring: 150 65% 35%; /* Anillos verdes ReFi */
+    --chart-1: 150 60% 40%; /* Verde ReFi */
+    --chart-2: 195 55% 50%; /* Azul teal */
+    --chart-3: 150 50% 30%; /* Verde oscuro */
+    --chart-4: 45 80% 55%; /* Amarillo verdoso */
+    --chart-5: 195 50% 60%; /* Azul cielo */
     --radius: 0.5rem; /* Radios consistentes */
   }
   .dark {
