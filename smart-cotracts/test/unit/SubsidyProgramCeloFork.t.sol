@@ -5,6 +5,7 @@ import {Test, console} from "forge-std/Test.sol";
 import "forge-std/StdCheats.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SubsidyProgram} from "../../src/SubsidyProgram.sol";
+import {DeploySubsidyProgram} from "../helpers/DeploySubsidyProgram.sol";
 
 // This test is designed to run against a CELO mainnet fork with real Uniswap V3.
 // Provide the following env vars before running:
@@ -52,7 +53,7 @@ contract SubsidyProgramCeloFork is Test {
         deal(address(CCOP), address(this), 1e6);
         deal(address(USDGLO), address(this), 1e6);
 
-        subsidyProgram = new SubsidyProgram(address(CCOP), ROUTER);
+        subsidyProgram = DeploySubsidyProgram.deploy(address(CCOP), ROUTER, address(this));
     }
 
     function testFork_claimViaRealSwap() external {

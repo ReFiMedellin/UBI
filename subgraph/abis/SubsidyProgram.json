@@ -1,28 +1,385 @@
 [
   {
     "type": "constructor",
-    "inputs": [
-      { "name": "_tokenAddress", "type": "address", "internalType": "address" }
-    ],
+    "inputs": [],
     "stateMutability": "nonpayable"
   },
   {
-    "name": "OwnableInvalidOwner",
-    "type": "error",
-    "inputs": [
-      { "name": "owner", "type": "address", "internalType": "address" }
-    ]
+    "type": "function",
+    "name": "UPGRADE_INTERFACE_VERSION",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
   },
   {
-    "name": "OwnableUnauthorizedAccount",
-    "type": "error",
+    "type": "function",
+    "name": "addBeneficiary",
     "inputs": [
-      { "name": "account", "type": "address", "internalType": "address" }
-    ]
+      {
+        "name": "_userAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
+    "type": "function",
+    "name": "addFunds",
+    "inputs": [
+      {
+        "name": "_amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_tokenAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "addToken",
+    "inputs": [
+      {
+        "name": "_tokenAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "addressToUser",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct SubsidyProgram.User",
+        "components": [
+          {
+            "name": "lastClaimed",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "totalClaimed",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "changeTokenPriority",
+    "inputs": [
+      {
+        "name": "_tokenAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_newIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claimSubsidy",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getWhitelistedTokens",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address[]",
+        "internalType": "address[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "initialize",
+    "inputs": [
+      {
+        "name": "_tokenAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_swapRouter",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_initialOwner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "isBeneficiary",
+    "inputs": [
+      {
+        "name": "_beneficiaryAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "proxiableUUID",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "removeBeneficiary",
+    "inputs": [
+      {
+        "name": "_userAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "removeToken",
+    "inputs": [
+      {
+        "name": "_tokenAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "renounceOwnership",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setClaimInterval",
+    "inputs": [
+      {
+        "name": "_interval",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setClaimableAmount",
+    "inputs": [
+      {
+        "name": "_amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setTokenFeeTier",
+    "inputs": [
+      {
+        "name": "_tokenAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_feeTier",
+        "type": "uint24",
+        "internalType": "uint24"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "subsidyClaimInterval",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "subsidyClaimableAmount",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "swapRouter",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract ISwapRouter"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "tokenToFeeTier",
+    "inputs": [
+      {
+        "name": "token",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint24",
+        "internalType": "uint24"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "transferOwnership",
+    "inputs": [
+      {
+        "name": "newOwner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "upgradeToAndCall",
+    "inputs": [
+      {
+        "name": "newImplementation",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "data",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "withdrawFunds",
+    "inputs": [
+      {
+        "name": "_tokenAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
     "name": "BeneficiaryAdded",
-    "type": "event",
     "inputs": [
       {
         "name": "beneficiaryAddress",
@@ -34,8 +391,8 @@
     "anonymous": false
   },
   {
+    "type": "event",
     "name": "BeneficiaryRemoved",
-    "type": "event",
     "inputs": [
       {
         "name": "beneficiaryAddress",
@@ -47,8 +404,8 @@
     "anonymous": false
   },
   {
-    "name": "ClaimIntervalSet",
     "type": "event",
+    "name": "ClaimIntervalSet",
     "inputs": [
       {
         "name": "interval",
@@ -60,8 +417,8 @@
     "anonymous": false
   },
   {
-    "name": "ClaimableAmountSet",
     "type": "event",
+    "name": "ClaimableAmountSet",
     "inputs": [
       {
         "name": "amount",
@@ -73,8 +430,8 @@
     "anonymous": false
   },
   {
-    "name": "FundsAdded",
     "type": "event",
+    "name": "FundsAdded",
     "inputs": [
       {
         "name": "amount",
@@ -83,7 +440,13 @@
         "internalType": "uint256"
       },
       {
-        "name": "contractBalance",
+        "name": "tokenAddress",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "tokenBalance",
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"
@@ -92,9 +455,15 @@
     "anonymous": false
   },
   {
-    "name": "FundsWithdrawed",
     "type": "event",
+    "name": "FundsWithdrawn",
     "inputs": [
+      {
+        "name": "tokenAddress",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
       {
         "name": "amountWithdrawed",
         "type": "uint256",
@@ -105,8 +474,21 @@
     "anonymous": false
   },
   {
-    "name": "OwnershipTransferred",
     "type": "event",
+    "name": "Initialized",
+    "inputs": [
+      {
+        "name": "version",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OwnershipTransferred",
     "inputs": [
       {
         "name": "previousOwner",
@@ -124,8 +506,8 @@
     "anonymous": false
   },
   {
-    "name": "SubsidyClaimed",
     "type": "event",
+    "name": "SubsidyClaimed",
     "inputs": [
       {
         "name": "beneficiaryAddress",
@@ -149,153 +531,178 @@
     "anonymous": false
   },
   {
-    "name": "TokenAddressSet",
     "type": "event",
+    "name": "TokenAdded",
     "inputs": [
       {
         "name": "tokenAddress",
         "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newIndex",
+        "type": "uint256",
         "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TokenPriorityChanged",
+    "inputs": [
+      {
+        "name": "tokenAddress",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "oldIndex",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "newIndex",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TokenRemoved",
+    "inputs": [
+      {
+        "name": "tokenAddress",
+        "type": "address",
+        "indexed": true,
         "internalType": "address"
       }
     ],
     "anonymous": false
   },
   {
-    "name": "addBeneficiary",
-    "type": "function",
-    "inputs": [
-      { "name": "_userAddress", "type": "address", "internalType": "address" }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "name": "addFunds",
-    "type": "function",
-    "inputs": [
-      { "name": "_amount", "type": "uint256", "internalType": "uint256" }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "name": "addressToUser",
-    "type": "function",
-    "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
-    "outputs": [
-      { "name": "lastClaimed", "type": "uint256", "internalType": "uint256" },
-      { "name": "totalClaimed", "type": "uint256", "internalType": "uint256" }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "name": "claimSubsidy",
-    "type": "function",
-    "inputs": [],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "name": "isBeneficiary",
-    "type": "function",
+    "type": "event",
+    "name": "TokenSwapped",
     "inputs": [
       {
-        "name": "_beneficiaryAddress",
+        "name": "tokenAddress",
         "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amountIn",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "amountOut",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Upgraded",
+    "inputs": [
+      {
+        "name": "implementation",
+        "type": "address",
+        "indexed": true,
         "internalType": "address"
       }
     ],
-    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
-    "stateMutability": "view"
+    "anonymous": false
   },
   {
-    "name": "owner",
-    "type": "function",
-    "inputs": [],
-    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
-    "stateMutability": "view"
-  },
-  {
-    "name": "removeBeneficiary",
-    "type": "function",
+    "type": "error",
+    "name": "AddressEmptyCode",
     "inputs": [
-      { "name": "_userAddress", "type": "address", "internalType": "address" }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
+      {
+        "name": "target",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
   },
   {
-    "name": "renounceOwnership",
-    "type": "function",
-    "inputs": [],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "name": "setClaimInterval",
-    "type": "function",
+    "type": "error",
+    "name": "ERC1967InvalidImplementation",
     "inputs": [
-      { "name": "_interval", "type": "uint256", "internalType": "uint256" }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
+      {
+        "name": "implementation",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
   },
   {
-    "name": "setClaimableAmount",
-    "type": "function",
+    "type": "error",
+    "name": "ERC1967NonPayable",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "FailedCall",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidInitialization",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotInitializing",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "OwnableInvalidOwner",
     "inputs": [
-      { "name": "_amount", "type": "uint256", "internalType": "uint256" }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
   },
   {
-    "name": "setTokenAddress",
-    "type": "function",
+    "type": "error",
+    "name": "OwnableUnauthorizedAccount",
     "inputs": [
-      { "name": "_tokenAddress", "type": "address", "internalType": "address" }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
   },
   {
-    "name": "subsidyClaimInterval",
-    "type": "function",
-    "inputs": [],
-    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
-    "stateMutability": "view"
+    "type": "error",
+    "name": "UUPSUnauthorizedCallContext",
+    "inputs": []
   },
   {
-    "name": "subsidyClaimableAmount",
-    "type": "function",
-    "inputs": [],
-    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
-    "stateMutability": "view"
-  },
-  {
-    "name": "token",
-    "type": "function",
-    "inputs": [],
-    "outputs": [
-      { "name": "", "type": "address", "internalType": "contract IERC20" }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "name": "transferOwnership",
-    "type": "function",
+    "type": "error",
+    "name": "UUPSUnsupportedProxiableUUID",
     "inputs": [
-      { "name": "newOwner", "type": "address", "internalType": "address" }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "name": "withdrawFunds",
-    "type": "function",
-    "inputs": [],
-    "outputs": [],
-    "stateMutability": "nonpayable"
+      {
+        "name": "slot",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
   }
 ]

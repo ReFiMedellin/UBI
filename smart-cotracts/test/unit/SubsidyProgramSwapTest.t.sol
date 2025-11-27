@@ -6,6 +6,7 @@ import {Test, console} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {MockERC20} from "../mock/MockERC20.sol";
 import {MockSwapRouter} from "../mock/MockSwapRouter.sol";
+import {DeploySubsidyProgram} from "../helpers/DeploySubsidyProgram.sol";
 
 contract SubsidyProgramSwapTest is Test {
     SubsidyProgram subsidyProgram;
@@ -36,9 +37,7 @@ contract SubsidyProgramSwapTest is Test {
         token3 = IERC20(address(mockToken3));
         
         // Deploy subsidy program
-        vm.startBroadcast();
-        subsidyProgram = new SubsidyProgram(address(token1), address(mockSwapRouter));
-        vm.stopBroadcast();
+        subsidyProgram = DeploySubsidyProgram.deploy(address(token1), address(mockSwapRouter), msg.sender);
         
         // Give mock router some token1 (cCop) for swaps
         vm.startPrank(msg.sender);
@@ -138,10 +137,6 @@ contract SubsidyProgramSwapTest is Test {
 
     function testSlippageProtection() public {
         vm.warp(TEN_YEARS);
-        
-        // Set high slippage tolerance
-        vm.prank(msg.sender);
-        subsidyProgram.setMaxSlippage(1000); // 10%
         
         // Add funds - insufficient cCop, need to swap token2
         vm.startPrank(msg.sender);

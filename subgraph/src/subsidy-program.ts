@@ -4,13 +4,18 @@ import {
   BeneficiaryRemoved as BeneficiaryRemovedEvent,
   SubsidyClaimed as SubsidyClaimedEvent,
   FundsAdded as FundsAddedEvent,
-  FundsWithdrawed as FundsWithdrawedEvent,
+  FundsWithdrawn as FundsWithdrawnEvent,
+  TokenSwapped as TokenSwappedEvent,
+  TokenAdded as TokenAddedEvent,
 } from "../generated/SubsidyProgram/SubsidyProgram"
 import {
   Beneficiary,
   Funds,
   DailyClaim,
+  TokenBalance,
 } from "../generated/schema"
+
+const BASE_TOKEN = Bytes.fromHexString("0x8A567e2aE79CA692Bd748aB832081C45de4041eA")
 
 // Helper function to get or create DailyClaim entity
 function getOrCreateDailyClaim(timestamp: BigInt): DailyClaim {
@@ -38,6 +43,19 @@ function getOrCreateFunds(address: Address): Funds {
     funds.totalClaimed = BigInt.zero()
   }
   return funds
+}
+
+function getOrCreateTokenBalance(funds: Funds, token: Bytes): TokenBalance {
+  let tb = TokenBalance.load(token)
+  if (!tb) {
+    tb = new TokenBalance(token)
+    tb.token = token
+    tb.balance = BigInt.zero()
+    tb.totalSwapped = BigInt.zero()
+    tb.totalWithdrawn = BigInt.zero()
+    tb.funds = funds.id
+  }
+  return tb
 }
 
 export function handleBeneficiaryAdded(event: BeneficiaryAddedEvent): void {
@@ -95,17 +113,48 @@ export function handleSubsidyClaimed(event: SubsidyClaimedEvent): void {
 export function handleFundsAdded(event: FundsAddedEvent): void {
   let funds = getOrCreateFunds(event.address)
 
-  funds.totalSupplied = funds.totalSupplied.plus(event.params.amount)
-  funds.contractBalance = event.params.contractBalance
+  if (event.params.tokenAddress == BASE_TOKEN) {
+    funds.totalSupplied = funds.totalSupplied.plus(event.params.amount)
+    funds.contractBalance = event.params.tokenBalance
+  } else {
+    let tb = getOrCreateTokenBalance(funds, event.params.tokenAddress)
+    tb.balance = event.params.tokenBalance
+    tb.save()
+  }
 
   funds.save()
 }
 
-export function handleFundsWithdrawed(event: FundsWithdrawedEvent): void {
+export function handleFundsWithdrawn(event: FundsWithdrawnEvent): void {
   let funds = getOrCreateFunds(event.address)
 
-  funds.totalWithdrawn = funds.totalWithdrawn.plus(event.params.amountWithdrawed)
-  funds.contractBalance = funds.contractBalance.minus(event.params.amountWithdrawed)
+  if (event.params.tokenAddress == BASE_TOKEN) {
+    funds.totalWithdrawn = funds.totalWithdrawn.plus(event.params.amountWithdrawed)
+    funds.contractBalance = funds.contractBalance.minus(event.params.amountWithdrawed)
+  } else {
+    let tb = getOrCreateTokenBalance(funds, event.params.tokenAddress)
+    tb.totalWithdrawn = tb.totalWithdrawn.plus(event.params.amountWithdrawed)
+    tb.balance = tb.balance.minus(event.params.amountWithdrawed)
+    tb.save()
+  }
 
+  funds.save()
+}
+
+export function handleTokenAdded(event: TokenAddedEvent): void {
+  let funds = getOrCreateFunds(event.address)
+  let tb = getOrCreateTokenBalance(funds, event.params.tokenAddress)
+  tb.save()
+}
+
+export function handleTokenSwapped(event: TokenSwappedEvent): void {
+  let funds = getOrCreateFunds(event.address)
+  let tb = getOrCreateTokenBalance(funds, event.params.tokenAddress)
+
+  tb.totalSwapped = tb.totalSwapped.plus(event.params.amountIn)
+  tb.balance = tb.balance.minus(event.params.amountIn)
+  funds.contractBalance = funds.contractBalance.plus(event.params.amountOut)
+
+  tb.save()
   funds.save()
 }
