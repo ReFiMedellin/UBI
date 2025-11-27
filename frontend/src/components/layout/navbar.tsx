@@ -21,7 +21,7 @@ export function NavBar() {
       <nav className='border-b p-4 w-full'>
         <div className='container mx-auto flex items-center justify-between'>
           <div className='flex items-center space-x-8'>
-            <span className='font-bold'>ReFi Med</span>
+            <span className='font-bold'>ReFi Colombia</span>
             {isAdmin &&
               (location.pathname == '/admin' ? (
                 <Link to='/'>
