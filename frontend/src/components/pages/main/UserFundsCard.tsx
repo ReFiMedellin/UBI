@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   CardFooter,
+  CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -181,7 +182,9 @@ function UserFundsCard() {
   return (
     <Card className='w-full'>
       <form onSubmit={handleAddSubmit}>
-        <CardTitle className='text-white text-lg font-semibold p-6 pb-4 text-center'>Donar fondos</CardTitle>
+        <CardHeader className='text-center pb-4'>
+          <CardTitle className='text-white text-lg font-semibold'>Donar fondos</CardTitle>
+        </CardHeader>
         <CardContent className='px-6 pb-4 pt-0'>
           <Label className='text-gray-200 mb-3 block text-center'>Cantidad</Label>
           <Input name='amount' placeholder='$cCop' className='bg-background text-white border-border text-center' />
