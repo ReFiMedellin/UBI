@@ -1,5 +1,6 @@
 import { secondsToDays } from '@/utils';
 import { formatUnits } from 'viem';
+import { Button } from '@/components/ui/button';
 
 type HeaderProps = {
   isWhiteListed: boolean;
@@ -30,6 +31,14 @@ function Header({
               a la inclusión financiera y el acceso a servicios descentralizados.
             </p>
           </div>
+          <div className="text-xl font-bold text-white bg-gradient-to-r from-purple-500 to-purple-700 p-4 rounded-lg">
+            Lo sentimos, aún no eres beneficiario
+          </div>
+          <Button variant='link' asChild className="text-base">
+            <a target='_blank' href='https://tinyurl.com/ReFiMedUBIRequest'>
+              Registrate aquí
+            </a>
+          </Button>
         </div>
       );
     } else if (isAbleToClaim) {
