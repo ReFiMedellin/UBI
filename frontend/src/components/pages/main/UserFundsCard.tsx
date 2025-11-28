@@ -181,12 +181,12 @@ function UserFundsCard() {
   return (
     <Card className='w-full'>
       <form onSubmit={handleAddSubmit}>
-        <CardTitle className='text-white text-lg font-semibold p-6 pb-2 text-center'>Donar fondos</CardTitle>
-        <CardContent className='px-6 pb-6 pt-4'>
-          <Label className='text-gray-200 mb-2 block text-center'>Cantidad</Label>
-          <Input name='amount' placeholder='$cCop' className='mt-1 bg-background text-white border-border' />
+        <CardTitle className='text-white text-lg font-semibold p-6 pb-4 text-center'>Donar fondos</CardTitle>
+        <CardContent className='px-6 pb-4 pt-0'>
+          <Label className='text-gray-200 mb-3 block text-center'>Cantidad</Label>
+          <Input name='amount' placeholder='$cCop' className='bg-background text-white border-border text-center' />
         </CardContent>
-        <CardFooter className='px-6 pb-6'>
+        <CardFooter className='px-6 pb-6 pt-2'>
           <Button disabled={isPending || isLoading || !isConnected} className='w-full text-white rounded-lg'>
             {(isPending || isLoading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Donar

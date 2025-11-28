@@ -10,7 +10,7 @@ type InfoProps = {
 function Info({ isWhiteListed, lastClaimed, totalClaimed}: InfoProps) {
   const lastClaimedDate = new Date(Number(lastClaimed) * 1000)
   return (
-    <CardContent className="space-y-2">
+    <CardContent className="space-y-3 text-center">
       <p className="text-gray-200">
         <span className="font-medium">Última reclamación:</span> { isWhiteListed ? lastClaimedDate.toLocaleDateString("es-CO") : "N/A"}
       </p>

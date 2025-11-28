@@ -163,7 +163,7 @@ function App() {
               lastClaimed={lastClaimed}
               totalClaimed={totalClaimed}
             />
-            <CardFooter className='pt-4'>
+            <CardFooter className='pt-2 px-6 pb-6'>
               <Button
                 disabled={!isWhiteListed || !isAbleToClaim || isPending || isConfirming}
                 className='w-full'
