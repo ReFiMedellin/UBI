@@ -22,15 +22,20 @@ function Description({
   const getClaimMessage = () => {
     if (!isWhiteListed)
       return (
-        <Button variant='link' asChild className="text-lg">
-          <a target='_blank' href='https://tinyurl.com/ReFiMedUBIRequest'>
-            Registrate aquí
-          </a>
-        </Button>
+        <div className="text-center space-y-3">
+          <div className="text-xl font-bold text-white bg-gradient-to-r from-purple-500 to-purple-700 p-4 rounded-lg">
+            Lo sentimos, aún no eres beneficiario
+          </div>
+          <Button variant='link' asChild className="text-base">
+            <a target='_blank' href='https://tinyurl.com/ReFiMedUBIRequest'>
+              Registrate aquí
+            </a>
+          </Button>
+        </div>
       );
     else if (isAbleToClaim)
       return (
-        <span className="text-gray-200">
+        <span className="text-gray-200 text-center block">
           Puedes reclamar tu subsidio cada {claimIntervalInDays} días.
         </span>
       );

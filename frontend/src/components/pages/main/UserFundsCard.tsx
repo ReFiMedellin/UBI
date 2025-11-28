@@ -179,11 +179,11 @@ function UserFundsCard() {
   };
 
   return (
-    <Card className='lg:w-[350px] mx-auto'>
+    <Card className='w-full'>
       <form onSubmit={handleAddSubmit}>
-        <CardTitle className='text-white text-lg font-semibold p-6 pb-2'>Donar fondos</CardTitle>
-        <CardContent className='text-left px-6 pb-6 pt-4'>
-          <Label className='text-gray-200 mb-2 block'>Cantidad</Label>
+        <CardTitle className='text-white text-lg font-semibold p-6 pb-2 text-center'>Donar fondos</CardTitle>
+        <CardContent className='px-6 pb-6 pt-4'>
+          <Label className='text-gray-200 mb-2 block text-center'>Cantidad</Label>
           <Input name='amount' placeholder='$cCop' className='mt-1 bg-background text-white border-border' />
         </CardContent>
         <CardFooter className='px-6 pb-6'>
