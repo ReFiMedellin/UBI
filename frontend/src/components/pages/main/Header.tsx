@@ -19,9 +19,9 @@ function Header({
   const getHeaderMessage = () => {
     if (!isWhiteListed) {
       return (
-        <div className="text-center space-y-3">
-          <div className="text-base text-gray-700 leading-relaxed">
-            <p className="mb-2">
+        <div className="space-y-4">
+          <div className="text-base text-gray-700 leading-relaxed text-left lg:text-justify">
+            <p className="mb-3">
               El Programa de Subsidios ReFi Colombia es una iniciativa que proporciona subsidios periódicos en cCOP 
               (Celo Colombian Peso) a beneficiarios elegibles en la red Celo.
             </p>
@@ -30,7 +30,7 @@ function Header({
               a la inclusión financiera y el acceso a servicios descentralizados.
             </p>
           </div>
-          <div className="text-lg font-semibold text-gray-900 mt-4">
+          <div className="text-lg font-semibold text-gray-900 mt-4 text-center lg:text-left">
             Lo sentimos, aún no eres beneficiario
           </div>
         </div>
@@ -58,7 +58,7 @@ function Header({
     }
   };
 
-  return <h2 className='text-xl font-semibold'>{getHeaderMessage()}</h2>;
+  return <h2 className='text-xl font-semibold w-full'>{getHeaderMessage()}</h2>;
 }
 
 export default Header;

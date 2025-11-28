@@ -7,9 +7,9 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.95);
+  background-color: hsl(270, 30%, 10%);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,11 +19,11 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #a78bfa;
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #c4b5fd;
 }
 
 body {
@@ -44,85 +44,72 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #5b21b6;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #7c3aed;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
 @layer base {
   :root {
-    --gradient: linear-gradient(to top left, #00a86b, #008080, #0071BC);
-    --background: 150 20% 98%; /* Fondo muy claro con tinte verde suave */
-    --foreground: 150 10% 10%; /* Texto oscuro */
-    --muted: 150 15% 92%; /* Tonalidad pastel verde suave */
-    --muted-foreground: 150 5% 30%;
-    --popover: 150 25% 97%;
-    --popover-foreground: 150 10% 10%;
-    --card: 0 0% 100%; /* Fondo blanco puro para tarjetas */
-    --card-foreground: 150 10% 10%;
-    --border: 150 15% 85%;
-    --input: 150 15% 90%;
-    --primary: 150 65% 35%; /* Verde ReFi principal (#008000 aproximado) */
-    --primary-foreground: 0 0% 100%; /* Blanco puro para texto en primario */
-    --secondary: 195 60% 50%; /* Azul teal como secundario (#0071BC aproximado) */
+    --gradient: linear-gradient(to top left, #4c1d95, #5b21b6, #6d28d9);
+    --background: 270 30% 10%; /* Deep purple background */
+    --foreground: 0 0% 100%; /* White text */
+    --muted: 270 20% 20%; /* Muted purple */
+    --muted-foreground: 0 0% 80%;
+    --popover: 270 25% 15%;
+    --popover-foreground: 0 0% 100%;
+    --card: 270 25% 12%; /* Dark purple cards */
+    --card-foreground: 0 0% 100%;
+    --border: 270 20% 25%;
+    --input: 270 20% 20%;
+    --primary: 270 50% 40%; /* Purple primary */
+    --primary-foreground: 0 0% 100%; /* White text on primary */
+    --secondary: 200 60% 50%; /* Light blue accent */
     --secondary-foreground: 0 0% 100%;
-    --accent: 150 55% 45%; /* Verde esmeralda como acento */
+    --accent: 270 55% 45%; /* Purple accent */
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 70% 50%; /* Rojo para alertas destructivas */
+    --destructive: 0 70% 50%; /* Red for destructive */
     --destructive-foreground: 0 0% 100%;
-    --ring: 150 65% 35%; /* Anillos verdes ReFi */
-    --chart-1: 150 60% 40%; /* Verde ReFi */
-    --chart-2: 195 55% 50%; /* Azul teal */
-    --chart-3: 150 50% 30%; /* Verde oscuro */
-    --chart-4: 45 80% 55%; /* Amarillo verdoso */
-    --chart-5: 195 50% 60%; /* Azul cielo */
-    --radius: 0.5rem; /* Radios consistentes */
+    --ring: 270 50% 40%; /* Purple ring */
+    --chart-1: 270 50% 40%; /* Purple */
+    --chart-2: 200 60% 50%; /* Light blue */
+    --chart-3: 270 40% 30%; /* Dark purple */
+    --chart-4: 250 50% 45%; /* Violet */
+    --chart-5: 200 50% 60%; /* Sky blue */
+    --radius: 0.5rem;
   }
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --background: 270 30% 10%;
+    --foreground: 0 0% 100%;
+    --card: 270 25% 12%;
+    --card-foreground: 0 0% 100%;
+    --popover: 270 25% 15%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 270 50% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 200 60% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 270 20% 20%;
+    --muted-foreground: 0 0% 80%;
+    --accent: 270 55% 45%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 270 20% 25%;
+    --input: 270 20% 20%;
+    --ring: 270 50% 40%;
+    --chart-1: 270 50% 40%;
+    --chart-2: 200 60% 50%;
+    --chart-3: 270 40% 30%;
+    --chart-4: 250 50% 45%;
+    --chart-5: 200 50% 60%;
   }
 }
 

@@ -136,44 +136,53 @@ function App() {
   }, [isConfirmed, hash])
 
   return (
-    <div className='flex flex-1 flex-col items-center justify-center overflow-auto h-full'>
-      <div className='m-4'>
-        <div className='m-4 lg:w-[350px]'>
-          <Header
-            isWhiteListed={isWhiteListed}
-            isAbleToClaim={isAbleToClaim}
-            lastClaimed={lastClaimed}
-            claimInterval={claimInterval}
-            valueToClaim={valueToClaim}
-          />
+    <div className='flex flex-1 flex-col items-center justify-center overflow-auto h-full w-full'>
+      <div className='w-full max-w-7xl mx-auto px-4 py-8'>
+        <div className='flex flex-col lg:flex-row gap-8 items-start justify-center'>
+          {/* Left column - Header and Card */}
+          <div className='w-full lg:w-auto lg:min-w-[400px] lg:max-w-[500px]'>
+            <div className='mb-6'>
+              <Header
+                isWhiteListed={isWhiteListed}
+                isAbleToClaim={isAbleToClaim}
+                lastClaimed={lastClaimed}
+                claimInterval={claimInterval}
+                valueToClaim={valueToClaim}
+              />
+            </div>
+            <Card className='w-full'>
+              <Description
+                isWhiteListed={isWhiteListed}
+                isAbleToClaim={isAbleToClaim}
+                lastClaimed={lastClaimed}
+                claimInterval={claimInterval}
+              />
+              <Info
+                isWhiteListed={isWhiteListed}
+                lastClaimed={lastClaimed}
+                totalClaimed={totalClaimed}
+              />
+              <CardFooter>
+                <Button
+                  disabled={!isWhiteListed || !isAbleToClaim || isPending || isConfirming}
+                  className='w-full'
+                  onClick={handleClaim}
+                >
+                  {(isPending || isConfirming) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Reclamar
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+          
+          {/* Right column - User Funds Card */}
+          <div className='w-full lg:w-auto lg:min-w-[300px] lg:max-w-[400px]'>
+            <UserFundsCard />
+            <p className='text-sm text-gray-600 mt-4 text-center lg:text-left'>
+              Recuerda que esta donación es voluntaria y no se puede retirar.
+            </p>
+          </div>
         </div>
-        <Card className='lg:w-[350px] mx-auto'>
-          <Description
-            isWhiteListed={isWhiteListed}
-            isAbleToClaim={isAbleToClaim}
-            lastClaimed={lastClaimed}
-            claimInterval={claimInterval}
-          />
-          <Info
-            isWhiteListed={isWhiteListed}
-            lastClaimed={lastClaimed}
-            totalClaimed={totalClaimed}
-          />
-          <CardFooter>
-            <Button
-              disabled={!isWhiteListed || !isAbleToClaim || isPending || isConfirming}
-              className='w-full'
-              onClick={handleClaim}
-            >
-              {(isPending || isConfirming) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Reclamar
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-      <div className='m-4'>
-        <UserFundsCard />
-        <p className='text-sm text-gray-600 mt-4'>Recuerda que esta donación es voluntaria y no se puede retirar.</p>
       </div>
     </div>
   );
