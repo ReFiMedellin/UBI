@@ -137,10 +137,10 @@ function App() {
 
   return (
     <div className='flex flex-1 flex-col items-center justify-center overflow-auto h-full w-full'>
-      <div className='w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12'>
-        <div className='flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-start justify-center'>
-          {/* Left column - Header and Card */}
-          <div className='w-full lg:w-auto lg:min-w-[400px] lg:max-w-[500px]'>
+      <div className='w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12'>
+        <div className='flex flex-col gap-8 items-center justify-center'>
+          {/* Header */}
+          <div className='w-full'>
             <div className='mb-8'>
               <Header
                 isWhiteListed={isWhiteListed}
@@ -150,6 +150,10 @@ function App() {
                 valueToClaim={valueToClaim}
               />
             </div>
+          </div>
+
+          {/* Claim Card */}
+          <div className='w-full max-w-xl'>
             <Card className='w-full'>
               <Description
                 isWhiteListed={isWhiteListed}
@@ -175,10 +179,10 @@ function App() {
             </Card>
           </div>
 
-          {/* Right column - User Funds Card */}
-          <div className='w-full lg:w-auto lg:min-w-[350px] lg:max-w-[400px]'>
+          {/* Donate Funds Card */}
+          <div className='w-full max-w-xl'>
             <UserFundsCard />
-            <p className='text-sm text-gray-300 mt-6 text-center lg:text-left leading-relaxed'>
+            <p className='text-sm text-gray-300 mt-6 text-center leading-relaxed'>
               Recuerda que esta donación es voluntaria y no se puede retirar.
             </p>
           </div>
