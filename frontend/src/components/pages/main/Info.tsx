@@ -10,12 +10,16 @@ type InfoProps = {
 function Info({ isWhiteListed, lastClaimed, totalClaimed}: InfoProps) {
   const lastClaimedDate = new Date(Number(lastClaimed) * 1000)
   return (
-    <CardContent>
-      <p>Última reclamación: { isWhiteListed ? lastClaimedDate.toLocaleDateString("es-CO") : "N/A"}</p>
-      <p>Total reclamado: { isWhiteListed ?  new Intl.NumberFormat('es-CO', {
+    <CardContent className="space-y-2">
+      <p className="text-gray-200">
+        <span className="font-medium">Última reclamación:</span> { isWhiteListed ? lastClaimedDate.toLocaleDateString("es-CO") : "N/A"}
+      </p>
+      <p className="text-gray-200">
+        <span className="font-medium">Total reclamado:</span> { isWhiteListed ?  new Intl.NumberFormat('es-CO', {
         style: 'currency',
         currency: 'COP',
-      }).format(Number(formatUnits(totalClaimed, 18))) : "$ 0" } cCop</p>
+      }).format(Number(formatUnits(totalClaimed, 18))) : "$ 0" } cCop
+      </p>
     </CardContent>
   )
 }

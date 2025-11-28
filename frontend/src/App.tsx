@@ -137,11 +137,11 @@ function App() {
 
   return (
     <div className='flex flex-1 flex-col items-center justify-center overflow-auto h-full w-full'>
-      <div className='w-full max-w-7xl mx-auto px-4 py-8'>
-        <div className='flex flex-col lg:flex-row gap-8 items-start justify-center'>
+      <div className='w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12'>
+        <div className='flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-start justify-center'>
           {/* Left column - Header and Card */}
           <div className='w-full lg:w-auto lg:min-w-[400px] lg:max-w-[500px]'>
-            <div className='mb-6'>
+            <div className='mb-8'>
               <Header
                 isWhiteListed={isWhiteListed}
                 isAbleToClaim={isAbleToClaim}
@@ -162,7 +162,7 @@ function App() {
                 lastClaimed={lastClaimed}
                 totalClaimed={totalClaimed}
               />
-              <CardFooter>
+              <CardFooter className='pt-4'>
                 <Button
                   disabled={!isWhiteListed || !isAbleToClaim || isPending || isConfirming}
                   className='w-full'
@@ -174,11 +174,11 @@ function App() {
               </CardFooter>
             </Card>
           </div>
-          
+
           {/* Right column - User Funds Card */}
-          <div className='w-full lg:w-auto lg:min-w-[300px] lg:max-w-[400px]'>
+          <div className='w-full lg:w-auto lg:min-w-[350px] lg:max-w-[400px]'>
             <UserFundsCard />
-            <p className='text-sm text-gray-600 mt-4 text-center lg:text-left'>
+            <p className='text-sm text-gray-300 mt-6 text-center lg:text-left leading-relaxed'>
               Recuerda que esta donación es voluntaria y no se puede retirar.
             </p>
           </div>
